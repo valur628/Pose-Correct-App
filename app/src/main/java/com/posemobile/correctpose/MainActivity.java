@@ -94,6 +94,8 @@ public class MainActivity extends AppCompatActivity {
     //몸 랜드마크 포인트 변수
     private float[] bodyRatioMeasurement = new float[33];
     //비율 계산값 변수(정규화 값)
+    private boolean[][][] markResult = new boolean[33][33][33];
+    //검사 결과 true/false 변수
 
     private float ratioPoint_1a, ratioPoint_1b, ratioPoint_2a, ratioPoint_2b;
     //비율 계산에 쓰일 포인트 변수 (왼쪽, 오른쪽)
@@ -183,6 +185,25 @@ public class MainActivity extends AppCompatActivity {
                                 bodyRatioMeasurement[i] = bodyMarkPoint[i].z / (ratioPoint_1b - ratioPoint_1a);
                                 tv6.setText("k");
                             }
+
+
+                            if(getLandmarksAngleTwo(bodyMarkPoint[11], bodyMarkPoint[23], bodyMarkPoint[25], 'x', 'y') >= 90f
+                                    && getLandmarksAngleTwo(bodyMarkPoint[11], bodyMarkPoint[23], bodyMarkPoint[25], 'x', 'y') <= 130f) {
+                                markResult[11][23][25] = true;
+                            }
+                            else {
+                                markResult[11][23][25] = false;
+                            }
+                            //무릎-엉덩이-허리
+
+                            if(getLandmarksAngleTwo(bodyMarkPoint[23], bodyMarkPoint[11], bodyMarkPoint[7], 'x', 'y') >= 130f
+                                    && getLandmarksAngleTwo(bodyMarkPoint[23], bodyMarkPoint[11], bodyMarkPoint[7], 'x', 'y') <= 180f) {
+                                markResult[23][11][7] = true;
+                            }
+                            else {
+                                markResult[23][11][7] = false;
+                            }
+                            //엉덩이-허리-귀
 
                             tv6.setText("1");
                             tv.setText(bodyMarkPoint[13].x + " = 13X / 13Y = " + bodyMarkPoint[13].y);
