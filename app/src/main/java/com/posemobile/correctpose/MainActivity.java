@@ -160,21 +160,21 @@ public class MainActivity extends AppCompatActivity {
                         try {
                             NormalizedLandmarkList poseLandmarks = NormalizedLandmarkList.parseFrom(landmarksRaw);
                             tv6.setText("a");
-                            ratioPoint_1a = poseLandmarks.getLandmark(11).getY() * 1920f;
-                            ratioPoint_1b = poseLandmarks.getLandmark(13).getY() * 1920f;
-                            ratioPoint_2a = poseLandmarks.getLandmark(12).getY() * 1920f;
-                            ratioPoint_2b = poseLandmarks.getLandmark(14).getY() * 1920f;
+                            ratioPoint_1a = poseLandmarks.getLandmark(11).getY() * 1000f;
+                            ratioPoint_1b = poseLandmarks.getLandmark(13).getY() * 1000f;
+                            ratioPoint_2a = poseLandmarks.getLandmark(12).getY() * 1000f;
+                            ratioPoint_2b = poseLandmarks.getLandmark(14).getY() * 1000f;
                             tv6.setText("b");
                             for (int i = 0; i <= 32; i++) {
                                 bodyMarkPoint[i] = new markPoint();
                                 tv6.setText("c");
                                 bodyTempPoint[i] = poseLandmarks.getLandmark(i);
                                 tv6.setText("d");
-                                bodyMarkPoint[i].x = bodyTempPoint[i].getX() * 1080f;
+                                bodyMarkPoint[i].x = bodyTempPoint[i].getX() * 1000f;
                                 tv6.setText("e");
-                                bodyMarkPoint[i].y = bodyTempPoint[i].getY() * 1080f;
+                                bodyMarkPoint[i].y = bodyTempPoint[i].getY() * 1000f;
                                 tv6.setText("f");
-                                bodyMarkPoint[i].z = bodyTempPoint[i].getZ() * 1080f;
+                                bodyMarkPoint[i].z = bodyTempPoint[i].getZ() * 1000f;
                                 tv6.setText("g");
                                 bodyRatioMeasurement[i] = bodyMarkPoint[i].x / (ratioPoint_1b - ratioPoint_1a);
                                 tv6.setText("h");
