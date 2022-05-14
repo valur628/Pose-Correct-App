@@ -106,9 +106,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getContentViewLayoutResId());
-        tv = findViewById(R.id.tv);
+      /*  tv = findViewById(R.id.tv);
         tv2 = findViewById(R.id.tv2);
-        tv3 = findViewById(R.id.tv3);
+        tv3 = findViewById(R.id.tv3); */
         tv4 = findViewById(R.id.tv4);
         tv5 = findViewById(R.id.tv5);
         tv6 = findViewById(R.id.tv6);
@@ -193,7 +193,7 @@ public class MainActivity extends AppCompatActivity {
                             }
 
                             //arm part
-                            tv6.setText("1");
+                            /* tv6.setText("1");
                             tv.setText(bodyMarkPoint[13].x + " = 13X / 13Y = " + bodyMarkPoint[13].y);
                             tv6.setText("2");
                             tv2.setText(bodyMarkPoint[13].z + " = 13Z / RatioZ = " + bodyRatioMeasurement[13]);
@@ -201,12 +201,12 @@ public class MainActivity extends AppCompatActivity {
                             tv3.setText(bodyMarkPoint[14].x + " = 14X / 14Y = " + bodyMarkPoint[14].y);
                             tv6.setText("4");
                             tv4.setText(bodyMarkPoint[14].z + " = 14Z / RatioZ = " + bodyRatioMeasurement[14]);
-                            tv6.setText("5");
-                            tv5.setText(getLandmarksAngleTwo(bodyMarkPoint[12], bodyMarkPoint[14], bodyMarkPoint[16], 'x', 'y') + " =AngleXY 14 AngleXZ= " + getLandmarksAngleTwo(bodyMarkPoint[12], bodyMarkPoint[14], bodyMarkPoint[16], 'x', 'z'));
+                            tv6.setText("5"); */
+                            tv5.setText(getLandmarksAngleTwo(bodyMarkPoint[12], bodyMarkPoint[14], bodyMarkPoint[16], 'x', 'y') + " =ArmLeft ArmAngle ArmRight= " + getLandmarksAngleTwo(bodyMarkPoint[12], bodyMarkPoint[14], bodyMarkPoint[16], 'x', 'z'));
                             tv6.setText("6");
 
                             //leg part
-                            tv6.setText("1");
+                          /*  tv6.setText("1");
                             tv.setText(bodyMarkPoint[25].x + " = 13X / 13Y = " + bodyMarkPoint[25].y);
                             tv6.setText("2");
                             tv2.setText(bodyMarkPoint[25].z + " = 13Z / RatioZ = " + bodyRatioMeasurement[25]);
@@ -214,10 +214,10 @@ public class MainActivity extends AppCompatActivity {
                             tv3.setText(bodyMarkPoint[26].x + " = 14X / 14Y = " + bodyMarkPoint[26].y);
                             tv6.setText("4");
                             tv4.setText(bodyMarkPoint[26].z + " = 14Z / RatioZ = " + bodyRatioMeasurement[26]);
-                            tv6.setText("5");
-                            tv5.setText(getLandmarksAngleTwo(bodyMarkPoint[24], bodyMarkPoint[26], bodyMarkPoint[28], 'x', 'y') + " =AngleXY 14 AngleXZ= " + getLandmarksAngleTwo(bodyMarkPoint[23], bodyMarkPoint[25], bodyMarkPoint[27], 'x', 'z'));
+                            tv6.setText("5"); */
+                            tv4.setText(getLandmarksAngleTwo(bodyMarkPoint[24], bodyMarkPoint[26], bodyMarkPoint[28], 'x', 'y') + " =legLeft LegAngle LegRight= " + getLandmarksAngleTwo(bodyMarkPoint[23], bodyMarkPoint[25], bodyMarkPoint[27], 'x', 'z'));
                             tv6.setText("6");
-                            //this line is for commit push about line separators
+
                         } catch (InvalidProtocolBufferException e) {
                             Log.e(TAG, "Couldn't Exception received - " + e);
                             return;
