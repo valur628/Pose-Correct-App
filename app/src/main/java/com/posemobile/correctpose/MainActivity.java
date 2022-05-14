@@ -217,6 +217,7 @@ public class MainActivity extends AppCompatActivity {
                             tv6.setText("5");
                             tv5.setText(getLandmarksAngleTwo(bodyMarkPoint[24], bodyMarkPoint[26], bodyMarkPoint[28], 'x', 'y') + " =AngleXY 14 AngleXZ= " + getLandmarksAngleTwo(bodyMarkPoint[23], bodyMarkPoint[25], bodyMarkPoint[27], 'x', 'z'));
                             tv6.setText("6");
+                            //this line is for commit push about line separators
                         } catch (InvalidProtocolBufferException e) {
                             Log.e(TAG, "Couldn't Exception received - " + e);
                             return;
