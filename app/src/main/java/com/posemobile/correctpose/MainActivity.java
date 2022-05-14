@@ -372,5 +372,3 @@ public class MainActivity extends AppCompatActivity {
         float degree = (float) (radian / Math.PI * 180);
         return degree;
     }
-
-}
