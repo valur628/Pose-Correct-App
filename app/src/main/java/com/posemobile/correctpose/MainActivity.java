@@ -163,10 +163,10 @@ public class MainActivity extends AppCompatActivity {
                         try {
                             NormalizedLandmarkList poseLandmarks = NormalizedLandmarkList.parseFrom(landmarksRaw);
                             tv6.setText("a");
-                         /*   ratioPoint_1a = poseLandmarks.getLandmark(11).getY() * 1000f;
+                            ratioPoint_1a = poseLandmarks.getLandmark(11).getY() * 1000f;
                             ratioPoint_1b = poseLandmarks.getLandmark(13).getY() * 1000f;
                             ratioPoint_2a = poseLandmarks.getLandmark(12).getY() * 1000f;
-                            ratioPoint_2b = poseLandmarks.getLandmark(14).getY() * 1000f; */
+                            ratioPoint_2b = poseLandmarks.getLandmark(14).getY() * 1000f;
                             ratioPoint_legLeft1 = poseLandmarks.getLandmark(23).getY() * 1000f;
                             ratioPoint_legLeft2 = poseLandmarks.getLandmark(25).getY() * 1000f;
                             ratioPoint_legRight1 = poseLandmarks.getLandmark(24).getY() * 1000f;
@@ -193,7 +193,7 @@ public class MainActivity extends AppCompatActivity {
                             }
 
                             //arm part
-                         /*   tv6.setText("1");
+                            tv6.setText("1");
                             tv.setText(bodyMarkPoint[13].x + " = 13X / 13Y = " + bodyMarkPoint[13].y);
                             tv6.setText("2");
                             tv2.setText(bodyMarkPoint[13].z + " = 13Z / RatioZ = " + bodyRatioMeasurement[13]);
@@ -203,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
                             tv4.setText(bodyMarkPoint[14].z + " = 14Z / RatioZ = " + bodyRatioMeasurement[14]);
                             tv6.setText("5");
                             tv5.setText(getLandmarksAngleTwo(bodyMarkPoint[12], bodyMarkPoint[14], bodyMarkPoint[16], 'x', 'y') + " =AngleXY 14 AngleXZ= " + getLandmarksAngleTwo(bodyMarkPoint[12], bodyMarkPoint[14], bodyMarkPoint[16], 'x', 'z'));
-                            tv6.setText("6"); */
+                            tv6.setText("6");
 
                             //leg part
                             tv6.setText("1");
