@@ -88,6 +88,8 @@ public class MainActivity extends AppCompatActivity {
         float z;
     }
 
+    private boolean[][][] markResult = new boolean[33][33][33];
+    //검사 결과 true/false 변수
     private NormalizedLandmark[] bodyTempPoint = new NormalizedLandmark[33];
     //임시 랜드마크 포인트 변수
     private markPoint[] bodyMarkPoint = new markPoint[33];
@@ -97,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
 
     private float ratioPoint_1a, ratioPoint_1b, ratioPoint_2a, ratioPoint_2b;
     //비율 계산에 쓰일 포인트 변수 (왼쪽, 오른쪽)
+    private float ratioPoint_legLeft1,ratioPoint_legLeft2,ratioPoint_legRight1,ratioPoint_legRight2;
 
 
     @Override
@@ -160,11 +163,16 @@ public class MainActivity extends AppCompatActivity {
                         try {
                             NormalizedLandmarkList poseLandmarks = NormalizedLandmarkList.parseFrom(landmarksRaw);
                             tv6.setText("a");
-                            ratioPoint_1a = poseLandmarks.getLandmark(11).getY() * 1000f;
+                         /*   ratioPoint_1a = poseLandmarks.getLandmark(11).getY() * 1000f;
                             ratioPoint_1b = poseLandmarks.getLandmark(13).getY() * 1000f;
                             ratioPoint_2a = poseLandmarks.getLandmark(12).getY() * 1000f;
-                            ratioPoint_2b = poseLandmarks.getLandmark(14).getY() * 1000f;
+                            ratioPoint_2b = poseLandmarks.getLandmark(14).getY() * 1000f; */
+                            ratioPoint_legLeft1 = poseLandmarks.getLandmark(23).getY() * 1000f;
+                            ratioPoint_legLeft2 = poseLandmarks.getLandmark(25).getY() * 1000f;
+                            ratioPoint_legRight1 = poseLandmarks.getLandmark(24).getY() * 1000f;
+                            ratioPoint_legRight2 = poseLandmarks.getLandmark(26).getY() * 1000f;
                             tv6.setText("b");
+
                             for (int i = 0; i <= 32; i++) {
                                 bodyMarkPoint[i] = new markPoint();
                                 tv6.setText("c");
@@ -184,7 +192,8 @@ public class MainActivity extends AppCompatActivity {
                                 tv6.setText("k");
                             }
 
-                            tv6.setText("1");
+                            //arm part
+                         /*   tv6.setText("1");
                             tv.setText(bodyMarkPoint[13].x + " = 13X / 13Y = " + bodyMarkPoint[13].y);
                             tv6.setText("2");
                             tv2.setText(bodyMarkPoint[13].z + " = 13Z / RatioZ = " + bodyRatioMeasurement[13]);
@@ -194,6 +203,19 @@ public class MainActivity extends AppCompatActivity {
                             tv4.setText(bodyMarkPoint[14].z + " = 14Z / RatioZ = " + bodyRatioMeasurement[14]);
                             tv6.setText("5");
                             tv5.setText(getLandmarksAngleTwo(bodyMarkPoint[12], bodyMarkPoint[14], bodyMarkPoint[16], 'x', 'y') + " =AngleXY 14 AngleXZ= " + getLandmarksAngleTwo(bodyMarkPoint[12], bodyMarkPoint[14], bodyMarkPoint[16], 'x', 'z'));
+                            tv6.setText("6"); */
+
+                            //leg part
+                            tv6.setText("1");
+                            tv.setText(bodyMarkPoint[25].x + " = 13X / 13Y = " + bodyMarkPoint[25].y);
+                            tv6.setText("2");
+                            tv2.setText(bodyMarkPoint[25].z + " = 13Z / RatioZ = " + bodyRatioMeasurement[25]);
+                            tv6.setText("3");
+                            tv3.setText(bodyMarkPoint[26].x + " = 14X / 14Y = " + bodyMarkPoint[26].y);
+                            tv6.setText("4");
+                            tv4.setText(bodyMarkPoint[26].z + " = 14Z / RatioZ = " + bodyRatioMeasurement[26]);
+                            tv6.setText("5");
+                            tv5.setText(getLandmarksAngleTwo(bodyMarkPoint[24], bodyMarkPoint[26], bodyMarkPoint[28], 'x', 'y') + " =AngleXY 14 AngleXZ= " + getLandmarksAngleTwo(bodyMarkPoint[23], bodyMarkPoint[25], bodyMarkPoint[27], 'x', 'z'));
                             tv6.setText("6");
                         } catch (InvalidProtocolBufferException e) {
                             Log.e(TAG, "Couldn't Exception received - " + e);
