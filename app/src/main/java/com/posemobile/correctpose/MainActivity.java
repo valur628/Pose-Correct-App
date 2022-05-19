@@ -88,27 +88,28 @@ public class MainActivity extends AppCompatActivity {
         float z;
     }
 
-    private boolean[][][] markResult = new boolean[33][33][33];
-    //검사 결과 true/false 변수
-    private NormalizedLandmark[] bodyTempPoint = new NormalizedLandmark[33];
+    private NormalizedLandmark[] bodyAdvancePoint = new NormalizedLandmark[33];
     //임시 랜드마크 포인트 변수
     private markPoint[] bodyMarkPoint = new markPoint[33];
     //몸 랜드마크 포인트 변수
+    private markPoint[] bodyTempPoint = new markPoint[33];
+    //몸 랜드마크 추가 계산용 변수
     private float[] bodyRatioMeasurement = new float[33];
     //비율 계산값 변수(정규화 값)
+    private boolean[][][] markResult = new boolean[33][33][33];
+    //검사 결과 true/false 변수
 
     private float ratioPoint_1a, ratioPoint_1b, ratioPoint_2a, ratioPoint_2b;
     //비율 계산에 쓰일 포인트 변수 (왼쪽, 오른쪽)
-    private float ratioPoint_legLeft1,ratioPoint_legLeft2,ratioPoint_legRight1,ratioPoint_legRight2;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getContentViewLayoutResId());
-      /*  tv = findViewById(R.id.tv);
+        tv = findViewById(R.id.tv);
         tv2 = findViewById(R.id.tv2);
-        tv3 = findViewById(R.id.tv3); */
+        tv3 = findViewById(R.id.tv3);
         tv4 = findViewById(R.id.tv4);
         tv5 = findViewById(R.id.tv5);
         tv6 = findViewById(R.id.tv6);
@@ -167,22 +168,18 @@ public class MainActivity extends AppCompatActivity {
                             ratioPoint_1b = poseLandmarks.getLandmark(13).getY() * 1000f;
                             ratioPoint_2a = poseLandmarks.getLandmark(12).getY() * 1000f;
                             ratioPoint_2b = poseLandmarks.getLandmark(14).getY() * 1000f;
-                            ratioPoint_legLeft1 = poseLandmarks.getLandmark(23).getY() * 1000f;
-                            ratioPoint_legLeft2 = poseLandmarks.getLandmark(25).getY() * 1000f;
-                            ratioPoint_legRight1 = poseLandmarks.getLandmark(24).getY() * 1000f;
-                            ratioPoint_legRight2 = poseLandmarks.getLandmark(26).getY() * 1000f;
                             tv6.setText("b");
-
                             for (int i = 0; i <= 32; i++) {
                                 bodyMarkPoint[i] = new markPoint();
+                                bodyTempPoint[i] = new markPoint();
                                 tv6.setText("c");
-                                bodyTempPoint[i] = poseLandmarks.getLandmark(i);
+                                bodyAdvancePoint[i] = poseLandmarks.getLandmark(i);
                                 tv6.setText("d");
-                                bodyMarkPoint[i].x = bodyTempPoint[i].getX() * 1000f;
+                                bodyMarkPoint[i].x = bodyAdvancePoint[i].getX() * 1000f;
                                 tv6.setText("e");
-                                bodyMarkPoint[i].y = bodyTempPoint[i].getY() * 1000f;
+                                bodyMarkPoint[i].y = bodyAdvancePoint[i].getY() * 1000f;
                                 tv6.setText("f");
-                                bodyMarkPoint[i].z = bodyTempPoint[i].getZ() * 1000f;
+                                bodyMarkPoint[i].z = bodyAdvancePoint[i].getZ() * 1000f;
                                 tv6.setText("g");
                                 bodyRatioMeasurement[i] = bodyMarkPoint[i].x / (ratioPoint_1b - ratioPoint_1a);
                                 tv6.setText("h");
@@ -192,32 +189,57 @@ public class MainActivity extends AppCompatActivity {
                                 tv6.setText("k");
                             }
 
-                            //arm part
-                            /* tv6.setText("1");
-                            tv.setText(bodyMarkPoint[13].x + " = 13X / 13Y = " + bodyMarkPoint[13].y);
-                            tv6.setText("2");
-                            tv2.setText(bodyMarkPoint[13].z + " = 13Z / RatioZ = " + bodyRatioMeasurement[13]);
-                            tv6.setText("3");
-                            tv3.setText(bodyMarkPoint[14].x + " = 14X / 14Y = " + bodyMarkPoint[14].y);
-                            tv6.setText("4");
-                            tv4.setText(bodyMarkPoint[14].z + " = 14Z / RatioZ = " + bodyRatioMeasurement[14]);
-                            tv6.setText("5"); */
-                            tv5.setText(getLandmarksAngleTwo(bodyMarkPoint[12], bodyMarkPoint[14], bodyMarkPoint[16], 'x', 'y') + " =ArmLeft ArmAngle ArmRight= " + getLandmarksAngleTwo(bodyMarkPoint[12], bodyMarkPoint[14], bodyMarkPoint[16], 'x', 'z'));
-                            tv6.setText("6");
 
-                            //leg part
-                          /*  tv6.setText("1");
-                            tv.setText(bodyMarkPoint[25].x + " = 13X / 13Y = " + bodyMarkPoint[25].y);
-                            tv6.setText("2");
-                            tv2.setText(bodyMarkPoint[25].z + " = 13Z / RatioZ = " + bodyRatioMeasurement[25]);
-                            tv6.setText("3");
-                            tv3.setText(bodyMarkPoint[26].x + " = 14X / 14Y = " + bodyMarkPoint[26].y);
-                            tv6.setText("4");
-                            tv4.setText(bodyMarkPoint[26].z + " = 14Z / RatioZ = " + bodyRatioMeasurement[26]);
-                            tv6.setText("5"); */
-                            tv4.setText(getLandmarksAngleTwo(bodyMarkPoint[24], bodyMarkPoint[26], bodyMarkPoint[28], 'x', 'y') + " =legLeft LegAngle LegRight= " + getLandmarksAngleTwo(bodyMarkPoint[23], bodyMarkPoint[25], bodyMarkPoint[27], 'x', 'z'));
-                            tv6.setText("6");
+                            //왼쪽
+                            if(getLandmarksAngleTwo(bodyMarkPoint[11], bodyMarkPoint[23], bodyMarkPoint[25], 'x', 'y') >= 90f
+                                    && getLandmarksAngleTwo(bodyMarkPoint[11], bodyMarkPoint[23], bodyMarkPoint[25], 'x', 'y') <= 130f) {
+                                markResult[11][23][25] = true;
+                            }
+                            else {
+                                markResult[11][23][25] = false;
+                            }
+                            //무릎-엉덩이-허리
 
+                            if(getLandmarksAngleTwo(bodyMarkPoint[7], bodyMarkPoint[11], bodyMarkPoint[23], 'x', 'y') >= 130f
+                                    && getLandmarksAngleTwo(bodyMarkPoint[7], bodyMarkPoint[11], bodyMarkPoint[23], 'x', 'y') <= 180f) {
+                                markResult[7][11][23] = true;
+                            }
+                            else {
+                                markResult[7][11][23] = false;
+                            }
+                            //엉덩이-허리-귀
+
+                            if(getLandmarksAngleTwo(bodyMarkPoint[7], bodyMarkPoint[13], bodyMarkPoint[23], 'x', 'y') >= 140f
+                                    && getLandmarksAngleTwo(bodyMarkPoint[7], bodyMarkPoint[13], bodyMarkPoint[23], 'x', 'y') <= 180f) {
+                                markResult[7][13][23] = true;
+                            }
+                            else {
+                                markResult[7][13][23] = false;
+                            }
+                            //엉덩이-팔꿈치-귀
+
+                            bodyTempPoint[7] = bodyMarkPoint[7];
+                            bodyTempPoint[7].x = bodyTempPoint[7].x + 300f;
+                            if(getLandmarksAngleTwo(bodyTempPoint[7], bodyMarkPoint[7], bodyMarkPoint[11], 'x', 'y') >= 80f
+                                    && getLandmarksAngleTwo(bodyTempPoint[7], bodyMarkPoint[7], bodyMarkPoint[11], 'x', 'y') <= 160f) {
+                                markResult[7][7][11] = true;
+                            }
+                            else {
+                                markResult[7][7][11] = false;
+                            }
+                            //어깨-귀-귀너머(x+300)
+
+                            tv6.setText("1");
+                            tv.setText(getLandmarksAngleTwo(bodyMarkPoint[11], bodyMarkPoint[23], bodyMarkPoint[25], 'x', 'y') + " = 112325 / 071123 = " + getLandmarksAngleTwo(bodyMarkPoint[7], bodyMarkPoint[11], bodyMarkPoint[23], 'x', 'y'));
+                            tv6.setText("2");
+                            tv2.setText(getLandmarksAngleTwo(bodyMarkPoint[7], bodyMarkPoint[13], bodyMarkPoint[23], 'x', 'y') + " = 071323 / 070711 = " + getLandmarksAngleTwo(bodyTempPoint[7], bodyMarkPoint[7], bodyMarkPoint[11], 'x', 'y'));
+                            tv6.setText("3");
+                            tv3.setText(markResult[11][23][25] + " = [11][23][25] / [7][11][23] = " + markResult[7][11][23]);
+                            tv6.setText("4");
+                            tv4.setText(markResult[7][13][23] + " = [7][13][23] / [7][7][11] = " + markResult[7][7][11]);
+                            tv6.setText("5");
+                            tv5.setText(bodyTempPoint[7].x + " = 7tempX / 11normalX = " + bodyMarkPoint[11].x);
+                            tv6.setText("6");
                         } catch (InvalidProtocolBufferException e) {
                             Log.e(TAG, "Couldn't Exception received - " + e);
                             return;
@@ -372,3 +394,5 @@ public class MainActivity extends AppCompatActivity {
         float degree = (float) (radian / Math.PI * 180);
         return degree;
     }
+
+}
