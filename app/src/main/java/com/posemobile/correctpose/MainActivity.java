@@ -229,6 +229,24 @@ public class MainActivity extends AppCompatActivity {
                             }
                             //어깨-귀-귀너머(x+300)
 
+                            if(getLandmarksAngleTwo(bodyMarkPoint[23], bodyMarkPoint[25], bodyMarkPoint[27], 'x', 'y') >= 90f
+                                    && getLandmarksAngleTwo(bodyMarkPoint[23], bodyMarkPoint[25], bodyMarkPoint[27], 'x', 'y') <= 120f) {
+                                markResult[23][25][27] = true;
+                            }
+                            else {
+                                markResult[23][25][27] = false;
+                            }
+                            //엉덩이-무릎-발목 무릎각도
+
+                            if(getLandmarksAngleTwo(bodyMarkPoint[25], bodyMarkPoint[29], bodyMarkPoint[31], 'x', 'y') >= 100f
+                                    && getLandmarksAngleTwo(bodyMarkPoint[25], bodyMarkPoint[29], bodyMarkPoint[31], 'x', 'y') <= 120f) {
+                                markResult[25][29][31] = true;
+                            }
+                            else {
+                                markResult[25][29][31] = false;
+                            }
+                            //무릎-뒷꿈치-발 발목각도
+
                             tv6.setText("1");
                             tv.setText(getLandmarksAngleTwo(bodyMarkPoint[11], bodyMarkPoint[23], bodyMarkPoint[25], 'x', 'y') + " = 112325 / 071123 = " + getLandmarksAngleTwo(bodyMarkPoint[7], bodyMarkPoint[11], bodyMarkPoint[23], 'x', 'y'));
                             tv6.setText("2");
