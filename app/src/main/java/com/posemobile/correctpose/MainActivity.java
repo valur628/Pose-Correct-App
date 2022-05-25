@@ -284,7 +284,7 @@ public class MainActivity extends AppCompatActivity {
         //무릎-뒷꿈치-발 발목각도
 
         if(markResult[11 + side][23 + side][25 + side] && markResult[7 + side][11 + side][23 + side] && markResult[7 + side][13 + side][23 + side]
-        || markResult[7 + side][7 + side][11 + side] && markResult[23 + side][25 + side][27 + side] && markResult[25 + side][29 + side][31 + side])
+        && markResult[7 + side][7 + side][11 + side] && markResult[23 + side][25 + side][27 + side] && markResult[25 + side][29 + side][31 + side])
             sideTotalResult[side] = true;
         else
             sideTotalResult[side] = false;
