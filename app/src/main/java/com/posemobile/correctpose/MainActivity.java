@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.os.Handler;
 import android.view.View;
 
 import android.content.pm.ApplicationInfo;
@@ -98,10 +99,13 @@ public class MainActivity extends AppCompatActivity {
     //비율 계산값 변수(정규화 값)
     private boolean[][][] markResult = new boolean[33][33][33];
     //검사 결과 true/false 변수
+    private boolean sideTotalResult[] = new boolean[2]; //0=왼쪽, 1=오른쪽
 
     private float ratioPoint_1a, ratioPoint_1b, ratioPoint_2a, ratioPoint_2b;
     //비율 계산에 쓰일 포인트 변수 (왼쪽, 오른쪽)
 
+    Handler ui_Handler = null;
+    private boolean startThreadCheck = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,6 +156,8 @@ public class MainActivity extends AppCompatActivity {
         processor.setInputSidePackets(inputSidePackets);
         //tv.setText("999");
 
+        ui_Handler = new Handler();
+        ThreadClass callThread = new ThreadClass();
 //
         // To show verbose logging, run:
         // adb shell setprop log.tag.MainActivity VERBOSE
@@ -189,75 +195,18 @@ public class MainActivity extends AppCompatActivity {
                                 tv6.setText("k");
                             }
 
+                            if(bodyMarkPoint[11].z > bodyMarkPoint[12].z)
+                                getLandmarksAngleResult(0);
+                                //왼쪽
+                            else
+                                getLandmarksAngleResult(1);
+                                //오른쪽
 
-                            //왼쪽
-                            if(getLandmarksAngleTwo(bodyMarkPoint[11], bodyMarkPoint[23], bodyMarkPoint[25], 'x', 'y') >= 90f
-                                    && getLandmarksAngleTwo(bodyMarkPoint[11], bodyMarkPoint[23], bodyMarkPoint[25], 'x', 'y') <= 130f) {
-                                markResult[11][23][25] = true;
+                            if (startThreadCheck) {
+                                ui_Handler.post(callThread);
+                                // 핸들러를 통해 안드로이드 OS에게 작업을 요청
+                                startThreadCheck = false;
                             }
-                            else {
-                                markResult[11][23][25] = false;
-                            }
-                            //무릎-엉덩이-허리
-
-                            if(getLandmarksAngleTwo(bodyMarkPoint[7], bodyMarkPoint[11], bodyMarkPoint[23], 'x', 'y') >= 130f
-                                    && getLandmarksAngleTwo(bodyMarkPoint[7], bodyMarkPoint[11], bodyMarkPoint[23], 'x', 'y') <= 180f) {
-                                markResult[7][11][23] = true;
-                            }
-                            else {
-                                markResult[7][11][23] = false;
-                            }
-                            //엉덩이-허리-귀
-
-                            if(getLandmarksAngleTwo(bodyMarkPoint[7], bodyMarkPoint[13], bodyMarkPoint[23], 'x', 'y') >= 140f
-                                    && getLandmarksAngleTwo(bodyMarkPoint[7], bodyMarkPoint[13], bodyMarkPoint[23], 'x', 'y') <= 180f) {
-                                markResult[7][13][23] = true;
-                            }
-                            else {
-                                markResult[7][13][23] = false;
-                            }
-                            //엉덩이-팔꿈치-귀
-
-                            bodyTempPoint[7] = bodyMarkPoint[7];
-                            bodyTempPoint[7].x = bodyTempPoint[7].x + 300f;
-                            if(getLandmarksAngleTwo(bodyTempPoint[7], bodyMarkPoint[7], bodyMarkPoint[11], 'x', 'y') >= 80f
-                                    && getLandmarksAngleTwo(bodyTempPoint[7], bodyMarkPoint[7], bodyMarkPoint[11], 'x', 'y') <= 160f) {
-                                markResult[7][7][11] = true;
-                            }
-                            else {
-                                markResult[7][7][11] = false;
-                            }
-                            //어깨-귀-귀너머(x+300)
-
-                            if(getLandmarksAngleTwo(bodyMarkPoint[23], bodyMarkPoint[25], bodyMarkPoint[27], 'x', 'y') >= 90f
-                                    && getLandmarksAngleTwo(bodyMarkPoint[23], bodyMarkPoint[25], bodyMarkPoint[27], 'x', 'y') <= 120f) {
-                                markResult[23][25][27] = true;
-                            }
-                            else {
-                                markResult[23][25][27] = false;
-                            }
-                            //엉덩이-무릎-발목 무릎각도
-
-                            if(getLandmarksAngleTwo(bodyMarkPoint[25], bodyMarkPoint[29], bodyMarkPoint[31], 'x', 'y') >= 100f
-                                    && getLandmarksAngleTwo(bodyMarkPoint[25], bodyMarkPoint[29], bodyMarkPoint[31], 'x', 'y') <= 120f) {
-                                markResult[25][29][31] = true;
-                            }
-                            else {
-                                markResult[25][29][31] = false;
-                            }
-                            //무릎-뒷꿈치-발 발목각도
-
-                            tv6.setText("1");
-                            tv.setText(getLandmarksAngleTwo(bodyMarkPoint[11], bodyMarkPoint[23], bodyMarkPoint[25], 'x', 'y') + " = 112325 / 071123 = " + getLandmarksAngleTwo(bodyMarkPoint[7], bodyMarkPoint[11], bodyMarkPoint[23], 'x', 'y'));
-                            tv6.setText("2");
-                            tv2.setText(getLandmarksAngleTwo(bodyMarkPoint[7], bodyMarkPoint[13], bodyMarkPoint[23], 'x', 'y') + " = 071323 / 070711 = " + getLandmarksAngleTwo(bodyTempPoint[7], bodyMarkPoint[7], bodyMarkPoint[11], 'x', 'y'));
-                            tv6.setText("3");
-                            tv3.setText(markResult[11][23][25] + " = [11][23][25] / [7][11][23] = " + markResult[7][11][23]);
-                            tv6.setText("4");
-                            tv4.setText(markResult[7][13][23] + " = [7][13][23] / [7][7][11] = " + markResult[7][7][11]);
-                            tv6.setText("5");
-                            tv5.setText(bodyTempPoint[7].x + " = 7tempX / 11normalX = " + bodyMarkPoint[11].x);
-                            tv6.setText("6");
                         } catch (InvalidProtocolBufferException e) {
                             Log.e(TAG, "Couldn't Exception received - " + e);
                             return;
@@ -265,6 +214,80 @@ public class MainActivity extends AppCompatActivity {
                     }
             );
         }
+    }
+
+    class ThreadClass extends Thread {
+        //타이머 제외 갱신 UI 관리는 여기서
+        @Override
+        public void run() {
+            tv6.setText("1");
+            tv.setText(bodyMarkPoint[12].z + " = 12z / 11z = " + bodyMarkPoint[11].z);
+            tv6.setText("2");
+            tv2.setText(getLandmarksAngleTwo(bodyMarkPoint[7], bodyMarkPoint[13], bodyMarkPoint[23], 'x', 'y') + " = 071323 / 070711 = " + getLandmarksAngleTwo(bodyTempPoint[7], bodyMarkPoint[7], bodyMarkPoint[11], 'x', 'y'));
+            tv6.setText("3");
+            tv3.setText(markResult[11][23][25] + " = [11][23][25] / [7][11][23] = " + markResult[7][11][23]);
+            tv6.setText("4");
+            tv4.setText(sideTotalResult[1] + " = 왼쪽 / 오른쪽 = " + sideTotalResult[0]);
+            tv6.setText("5");
+            tv5.setText(bodyTempPoint[7].x + " = 7tempX / 11normalX = " + bodyMarkPoint[11].x);
+            tv6.setText("6");
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                startThreadCheck = true;
+            }
+            ui_Handler.post(this);
+        }
+    }
+
+    public void angleCalculationResult(int firstPoint, int secondPoint, int thirdPoint, float oneAngle, float twoAngle) {
+        if(getLandmarksAngleTwo(bodyMarkPoint[firstPoint], bodyMarkPoint[secondPoint], bodyMarkPoint[thirdPoint], 'x', 'y') >= oneAngle
+                && getLandmarksAngleTwo(bodyMarkPoint[firstPoint], bodyMarkPoint[secondPoint], bodyMarkPoint[thirdPoint], 'x', 'y') <= twoAngle) {
+            markResult[firstPoint][secondPoint][thirdPoint] = true;
+        }
+        else {
+            markResult[firstPoint][secondPoint][thirdPoint] = false;
+        }
+    }
+
+    public void getLandmarksAngleResult(int side) { //0=왼쪽, 1=오른쪽
+        angleCalculationResult(11 + side, 23 + side, 25 + side, 90f, 130f);
+        //무릎-엉덩이-허리
+
+        angleCalculationResult(7 + side, 11 + side, 23 + side, 130f, 180f);
+        //엉덩이-허리-귀
+
+        angleCalculationResult(7 + side, 13 + side, 23 + side, 140f, 180f);
+        //엉덩이-팔꿈치-귀
+
+        bodyTempPoint[7 + side] = bodyMarkPoint[7 + side];
+        bodyTempPoint[7 + side].x = bodyTempPoint[7 + side].x + 300f;
+        if(Double.isNaN(getLandmarksAngleTwo(bodyTempPoint[7 + side], bodyMarkPoint[7 + side], bodyMarkPoint[11 + side], 'x', 'y'))) {
+            if(getLandmarksAngleTwo(bodyTempPoint[7 + side], bodyMarkPoint[7 + side], bodyMarkPoint[11 + side], 'x', 'y') >= 80f
+                    && getLandmarksAngleTwo(bodyTempPoint[7 + side], bodyMarkPoint[7 + side], bodyMarkPoint[11 + side], 'x', 'y') <= 160f) {
+                markResult[7 + side][7 + side][11 + side] = true;
+            }
+            else {
+                markResult[7 + side][7 + side][11 + side] = false;
+            }
+        }
+        else {
+            markResult[7 + side][7 + side][11 + side] = true;
+        }
+        //어깨-귀-귀너머(x+300)
+
+        angleCalculationResult(23 + side, 25 + side, 27 + side, 90f, 120f);
+        //엉덩이-무릎-발목 무릎각도
+
+        angleCalculationResult(25 + side, 29 + side, 31 + side, 100f, 120f);
+        //무릎-뒷꿈치-발 발목각도
+
+        if(markResult[11 + side][23 + side][25 + side] && markResult[7 + side][11 + side][23 + side] && markResult[7 + side][13 + side][23 + side]
+        || markResult[7 + side][7 + side][11 + side] && markResult[23 + side][25 + side][27 + side] && markResult[25 + side][29 + side][31 + side])
+            sideTotalResult[side] = true;
+        else
+            sideTotalResult[side] = false;
     }
 
     // Used to obtain the content view for this application. If you are extending this class, and
