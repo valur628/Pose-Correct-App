@@ -221,15 +221,16 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void run() {
             tv6.setText("1");
-            tv.setText(bodyMarkPoint[12].z + " = 12z / 11z = " + bodyMarkPoint[11].z);
+            tv.setText(getLandmarksAngleTwo(bodyMarkPoint[11], bodyMarkPoint[23], bodyMarkPoint[25], 'x', 'y') + " = 무릎엉덩이허리 / 엉덩이허리귀 = " + getLandmarksAngleTwo(bodyMarkPoint[7], bodyMarkPoint[11], bodyMarkPoint[23], 'x', 'y'));
             tv6.setText("2");
-            tv2.setText(getLandmarksAngleTwo(bodyMarkPoint[7], bodyMarkPoint[13], bodyMarkPoint[23], 'x', 'y') + " = 071323 / 070711 = " + getLandmarksAngleTwo(bodyTempPoint[7], bodyMarkPoint[7], bodyMarkPoint[11], 'x', 'y'));
+            tv2.setText(getLandmarksAngleTwo(bodyMarkPoint[7], bodyMarkPoint[13], bodyMarkPoint[23], 'x', 'y') + " = 엉덩이팔꿈치귀 / 어깨귀귀너머 = " + getLandmarksAngleTwo(bodyTempPoint[7], bodyMarkPoint[7], bodyMarkPoint[11], 'x', 'y'));
             tv6.setText("3");
-            tv3.setText(markResult[11][23][25] + " = [11][23][25] / [7][11][23] = " + markResult[7][11][23]);
+            tv3.setText(getLandmarksAngleTwo(bodyMarkPoint[23], bodyMarkPoint[25], bodyMarkPoint[27], 'x', 'y') + " = 엉덩이무릎발목 / 무릎뒷꿈치발 = " + getLandmarksAngleTwo(bodyTempPoint[25], bodyMarkPoint[29], bodyMarkPoint[31], 'x', 'y'));
             tv6.setText("4");
-            tv4.setText(sideTotalResult[1] + " = 왼쪽 / 오른쪽 = " + sideTotalResult[0]);
+            tv4.setText(markResult[11][23][25] + " = " + markResult[7][11][23] + " = " + markResult[7][13][23] + " = "
+                        + markResult[7][7][11] + " = " + markResult[23][25][27] + " = " + markResult[25][29][31] + " = ");
             tv6.setText("5");
-            tv5.setText(bodyTempPoint[7].x + " = 7tempX / 11normalX = " + bodyMarkPoint[11].x);
+            tv5.setText(sideTotalResult[1] + " = 왼쪽 / 오른쪽 = " + sideTotalResult[0]);
             tv6.setText("6");
             try {
                 Thread.sleep(500);
@@ -252,18 +253,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void getLandmarksAngleResult(int side) { //0=왼쪽, 1=오른쪽
-        angleCalculationResult(11 + side, 23 + side, 25 + side, 90f, 130f);
+        angleCalculationResult(11 + side, 23 + side, 25 + side, 70f, 140f); //90f 120f
         //무릎-엉덩이-허리
 
-        angleCalculationResult(7 + side, 11 + side, 23 + side, 130f, 180f);
+        angleCalculationResult(7 + side, 11 + side, 23 + side, 120f, 180f); //130f 180f
         //엉덩이-허리-귀
 
-        angleCalculationResult(7 + side, 13 + side, 23 + side, 140f, 180f);
+        angleCalculationResult(7 + side, 13 + side, 23 + side, 120f, 180f); //140f 180f
         //엉덩이-팔꿈치-귀
 
         bodyTempPoint[7 + side] = bodyMarkPoint[7 + side];
         bodyTempPoint[7 + side].x = bodyTempPoint[7 + side].x + 300f;
-        if(Double.isNaN(getLandmarksAngleTwo(bodyTempPoint[7 + side], bodyMarkPoint[7 + side], bodyMarkPoint[11 + side], 'x', 'y'))) {
+        if(!Double.isNaN(getLandmarksAngleTwo(bodyTempPoint[7 + side], bodyMarkPoint[7 + side], bodyMarkPoint[11 + side], 'x', 'y'))) {
             if(getLandmarksAngleTwo(bodyTempPoint[7 + side], bodyMarkPoint[7 + side], bodyMarkPoint[11 + side], 'x', 'y') >= 80f
                     && getLandmarksAngleTwo(bodyTempPoint[7 + side], bodyMarkPoint[7 + side], bodyMarkPoint[11 + side], 'x', 'y') <= 160f) {
                 markResult[7 + side][7 + side][11 + side] = true;
@@ -277,10 +278,10 @@ public class MainActivity extends AppCompatActivity {
         }
         //어깨-귀-귀너머(x+300)
 
-        angleCalculationResult(23 + side, 25 + side, 27 + side, 90f, 120f);
+        angleCalculationResult(23 + side, 25 + side, 27 + side, 70f, 140f); //90f, 120f
         //엉덩이-무릎-발목 무릎각도
 
-        angleCalculationResult(25 + side, 29 + side, 31 + side, 100f, 120f);
+        angleCalculationResult(25 + side, 29 + side, 31 + side, 80f, 140f); //100f, 120f
         //무릎-뒷꿈치-발 발목각도
 
         if(markResult[11 + side][23 + side][25 + side] && markResult[7 + side][11 + side][23 + side] && markResult[7 + side][13 + side][23 + side]
