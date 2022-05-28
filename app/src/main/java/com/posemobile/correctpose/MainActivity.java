@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.os.Handler;
 import android.view.View;
 
 import android.content.pm.ApplicationInfo;
@@ -95,11 +96,14 @@ public class MainActivity extends AppCompatActivity {
     //비율 계산값 변수(정규화 값)
     private boolean[][][] markResult = new boolean[33][33][33];
     //검사 결과 true/false 변수
+    private boolean sideTotalResult[] = new boolean[2]; //0=왼쪽, 1=오른쪽
 
     private float ratioPoint_1a, ratioPoint_1b, ratioPoint_2a, ratioPoint_2b;
     //비율 계산에 쓰일 포인트 변수 (왼쪽, 오른쪽)
     private boolean waist, neck, ankle,knee;
 
+    Handler ui_Handler = null;
+    private boolean startThreadCheck = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,6 +151,8 @@ public class MainActivity extends AppCompatActivity {
         processor.setInputSidePackets(inputSidePackets);
         //tv.setText("999");
 
+        ui_Handler = new Handler();
+        ThreadClass callThread = new ThreadClass();
 //
         // To show verbose logging, run:
         // adb shell setprop log.tag.MainActivity VERBOSE
@@ -184,134 +190,18 @@ public class MainActivity extends AppCompatActivity {
                                 tv6.setText("k");
                             }
 
+                            if(bodyMarkPoint[11].z > bodyMarkPoint[12].z)
+                                getLandmarksAngleResult(0);
+                                //왼쪽
+                            else
+                                getLandmarksAngleResult(1);
+                                //오른쪽
 
-                            //왼쪽
-                            if(getLandmarksAngleTwo(bodyMarkPoint[11], bodyMarkPoint[23], bodyMarkPoint[25], 'x', 'y') >= 90f
-                                    && getLandmarksAngleTwo(bodyMarkPoint[11], bodyMarkPoint[23], bodyMarkPoint[25], 'x', 'y') <= 130f) {
-                                markResult[11][23][25] = true;
-                                waist = true;
+                            if (startThreadCheck) {
+                                ui_Handler.post(callThread);
+                                // 핸들러를 통해 안드로이드 OS에게 작업을 요청
+                                startThreadCheck = false;
                             }
-                            else {
-                                markResult[11][23][25] = false;
-                                waist = false;
-                            }
-                            //무릎-엉덩이-허리 허리각도
-
-                            if(getLandmarksAngleTwo(bodyMarkPoint[7], bodyMarkPoint[11], bodyMarkPoint[23], 'x', 'y') >= 130f
-                                    && getLandmarksAngleTwo(bodyMarkPoint[7], bodyMarkPoint[11], bodyMarkPoint[23], 'x', 'y') <= 180f) {
-                                markResult[7][11][23] = true;
-                                neck = true;
-                            }
-                            else {
-                                markResult[7][11][23] = false;
-                                neck = false;
-                            }
-                            //엉덩이-허리-귀 목각도
-
-                            if(getLandmarksAngleTwo(bodyMarkPoint[7], bodyMarkPoint[13], bodyMarkPoint[23], 'x', 'y') >= 140f
-                                    && getLandmarksAngleTwo(bodyMarkPoint[7], bodyMarkPoint[13], bodyMarkPoint[23], 'x', 'y') <= 180f) {
-                                markResult[7][13][23] = true;
-                            }
-                            else {
-                                markResult[7][13][23] = false;
-                            }
-                            //엉덩이-팔꿈치-귀
-
-                            bodyTempPoint[7] = bodyMarkPoint[7];
-                            bodyTempPoint[7].x = bodyTempPoint[7].x + 300f;
-                            if(getLandmarksAngleTwo(bodyTempPoint[7], bodyMarkPoint[7], bodyMarkPoint[11], 'x', 'y') >= 80f
-                                    && getLandmarksAngleTwo(bodyTempPoint[7], bodyMarkPoint[7], bodyMarkPoint[11], 'x', 'y') <= 160f) {
-                                markResult[7][7][11] = true;
-                            }
-                            else {
-                                markResult[7][7][11] = false;
-                            }
-                            //어깨-귀-귀너머(x+300)
-
-                            if(getLandmarksAngleTwo(bodyMarkPoint[23], bodyMarkPoint[25], bodyMarkPoint[27], 'x', 'y') >= 90f
-                                    && getLandmarksAngleTwo(bodyMarkPoint[23], bodyMarkPoint[25], bodyMarkPoint[27], 'x', 'y') <= 120f) {
-                                markResult[23][25][27] = true;
-                                knee = true;
-                            }
-                            else {
-                                markResult[23][25][27] = false;
-                                knee = false;
-                            }
-                            //엉덩이-무릎-발목 무릎각도
-
-                            if(getLandmarksAngleTwo(bodyMarkPoint[25], bodyMarkPoint[29], bodyMarkPoint[31], 'x', 'y') >= 100f
-                                    && getLandmarksAngleTwo(bodyMarkPoint[25], bodyMarkPoint[29], bodyMarkPoint[31], 'x', 'y') <= 120f) {
-                                markResult[25][29][31] = true;
-                                ankle = true;
-                            }
-                            else {
-                                markResult[25][29][31] = false;
-                                ankle = false;
-                            }
-                            //무릎-뒷꿈치-발 발목각도
-
-                            //한군데 문제가 있을 경우
-                            if(!neck&&waist&&knee&&ankle){
-                                tv.setText("목 자세가 잘못됐습니다.");
-                            }
-                            else if(neck&&!waist&&knee&&ankle){
-                                tv.setText("허리 자세가 잘못됐습니다.");
-                            }
-                            else if(neck&&waist&&!knee&&ankle){
-                                tv.setText("무릎 자세가 잘못됐습니다.");
-                            }
-                            else if(neck&&waist&&knee&&!ankle){
-                                tv.setText("발목 자세가 잘못됐습니다.");
-                            }
-
-                            //두군데 문제가 있을 경우
-                            if(!neck&&!waist&&knee&&ankle){
-                                tv.setText("목, 허리 자세가 잘못됐습니다.");
-                            }
-                            else if(!neck&&waist&&!knee&&ankle){
-                                tv.setText("목, 무릎 자세가 잘못됐습니다.");
-                            }
-                            else if(!neck&&!ankle&&knee&&waist){
-                                tv.setText("목, 발목 자세가 잘못됐습니다.");
-                            }
-                            else if(neck&&!waist&&!knee&&ankle){
-                                tv.setText("허리, 무릎 자세가 잘못됐습니다.");
-                            }
-                            else if(!ankle&&!waist&&knee&&neck){
-                                tv.setText("발목, 허리 자세가 잘못됐습니다.");
-                            }
-                            else if(!knee&&!ankle&&neck&&waist){
-                                tv.setText("발목, 무릎 자세가 잘못됐습니다.");
-                            }
-
-                            //세군데 문제가 있을 경우
-                            if(!knee&&!ankle&&!neck&&waist){
-                                tv.setText("목, 무릎, 발목 자세가 잘못됐습니다.");
-                            }
-                            else if(!knee&&!ankle&neck&&!waist){
-                                tv.setText("허리, 무릎, 발목 자세가 잘못됐습니다.");
-                            }
-                            else if(!knee&&ankle&!neck&&!waist){
-                                tv.setText("목,허리, 무릎 자세가 잘못됐습니다.");
-                            }
-                            else if(knee&&!ankle&!neck&&!waist){
-                                tv.setText("목, 허리, 발목 자세가 잘못됐습니다.");
-                            }
-                            //전부 문제가 있을 경우
-                            if(!knee&&!ankle&!neck&&!waist){
-                                tv.setText("전체적인 자세가 잘못됐습니다.");
-                            }
-
-                            //정상판별
-                            if( waist && knee && neck && ankle) {
-                                tv6.setText("1");
-                                tv2.setText("현 자세가 정상입니다.");
-                            }
-                            else {
-                                tv6.setText("2");
-                                tv2.setText("현 자세가 비정상입니다.");
-                            }
-
                         } catch (InvalidProtocolBufferException e) {
                             Log.e(TAG, "Couldn't Exception received - " + e);
                             return;
@@ -319,6 +209,86 @@ public class MainActivity extends AppCompatActivity {
                     }
             );
         }
+    }
+
+    class ThreadClass extends Thread {
+        //타이머 제외 갱신 UI 관리는 여기서
+        @Override
+        public void run() {
+                            //정상판별
+                            if( sideTotalResult[1] && sideTotalResult[0]) {
+                                tv6.setText("1");
+                                tv2.setText("현 자세가 정상입니다.");
+                            }
+                            else if( sideTotalResult[1]) {
+                                tv6.setText("2");
+                                tv2.setText("오른쪽 자세만 정상입니다.");
+                            }
+                            else if( sideTotalResult[0]) {
+                                tv6.setText("3");
+                                tv2.setText("왼쪽 자세만 정상입니다.");
+                            }
+                            else {
+                                tv6.setText("4");
+                                tv2.setText("현 자세가 비정상입니다.");
+                            }
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                startThreadCheck = true;
+            }
+            ui_Handler.post(this);
+        }
+    }
+
+    public void angleCalculationResult(int firstPoint, int secondPoint, int thirdPoint, float oneAngle, float twoAngle) {
+        if(getLandmarksAngleTwo(bodyMarkPoint[firstPoint], bodyMarkPoint[secondPoint], bodyMarkPoint[thirdPoint], 'x', 'y') >= oneAngle
+                && getLandmarksAngleTwo(bodyMarkPoint[firstPoint], bodyMarkPoint[secondPoint], bodyMarkPoint[thirdPoint], 'x', 'y') <= twoAngle) {
+            markResult[firstPoint][secondPoint][thirdPoint] = true;
+        }
+        else {
+            markResult[firstPoint][secondPoint][thirdPoint] = false;
+        }
+    }
+
+    public void getLandmarksAngleResult(int side) { //0=왼쪽, 1=오른쪽
+        angleCalculationResult(11 + side, 23 + side, 25 + side, 70f, 140f); //90f 120f
+        //무릎-엉덩이-허리
+
+        angleCalculationResult(7 + side, 11 + side, 23 + side, 120f, 180f); //130f 180f
+        //엉덩이-허리-귀
+
+        angleCalculationResult(7 + side, 13 + side, 23 + side, 120f, 180f); //140f 180f
+        //엉덩이-팔꿈치-귀
+
+        bodyTempPoint[7 + side] = bodyMarkPoint[7 + side];
+        bodyTempPoint[7 + side].x = bodyTempPoint[7 + side].x + 300f;
+        if(!Double.isNaN(getLandmarksAngleTwo(bodyTempPoint[7 + side], bodyMarkPoint[7 + side], bodyMarkPoint[11 + side], 'x', 'y'))) {
+            if(getLandmarksAngleTwo(bodyTempPoint[7 + side], bodyMarkPoint[7 + side], bodyMarkPoint[11 + side], 'x', 'y') >= 80f
+                    && getLandmarksAngleTwo(bodyTempPoint[7 + side], bodyMarkPoint[7 + side], bodyMarkPoint[11 + side], 'x', 'y') <= 160f) {
+                markResult[7 + side][7 + side][11 + side] = true;
+            }
+            else {
+                markResult[7 + side][7 + side][11 + side] = false;
+            }
+        }
+        else {
+            markResult[7 + side][7 + side][11 + side] = true;
+        }
+        //어깨-귀-귀너머(x+300)
+
+        angleCalculationResult(23 + side, 25 + side, 27 + side, 70f, 140f); //90f, 120f
+        //엉덩이-무릎-발목 무릎각도
+
+        angleCalculationResult(25 + side, 29 + side, 31 + side, 80f, 140f); //100f, 120f
+        //무릎-뒷꿈치-발 발목각도
+
+        if(markResult[11 + side][23 + side][25 + side] && markResult[7 + side][11 + side][23 + side] && markResult[7 + side][13 + side][23 + side]
+        && markResult[7 + side][7 + side][11 + side] && markResult[23 + side][25 + side][27 + side] && markResult[25 + side][29 + side][31 + side])
+            sideTotalResult[side] = true;
+        else
+            sideTotalResult[side] = false;
     }
 
     // Used to obtain the content view for this application. If you are extending this class, and
