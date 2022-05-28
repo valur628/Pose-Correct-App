@@ -78,9 +78,6 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView tv;
     private TextView tv2;
-    private TextView tv3;
-    private TextView tv4;
-    private TextView tv5;
     private TextView tv6;
 
     class markPoint {
@@ -103,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
 
     private float ratioPoint_1a, ratioPoint_1b, ratioPoint_2a, ratioPoint_2b;
     //비율 계산에 쓰일 포인트 변수 (왼쪽, 오른쪽)
+    private boolean waist, neck, ankle,knee;
 
     Handler ui_Handler = null;
     private boolean startThreadCheck = true;
@@ -113,9 +111,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(getContentViewLayoutResId());
         tv = findViewById(R.id.tv);
         tv2 = findViewById(R.id.tv2);
-        tv3 = findViewById(R.id.tv3);
-        tv4 = findViewById(R.id.tv4);
-        tv5 = findViewById(R.id.tv5);
         tv6 = findViewById(R.id.tv6);
         //tv.setText("000");
         try {
@@ -220,18 +215,23 @@ public class MainActivity extends AppCompatActivity {
         //타이머 제외 갱신 UI 관리는 여기서
         @Override
         public void run() {
-            tv6.setText("1");
-            tv.setText(getLandmarksAngleTwo(bodyMarkPoint[11], bodyMarkPoint[23], bodyMarkPoint[25], 'x', 'y') + " = 무릎엉덩이허리 / 엉덩이허리귀 = " + getLandmarksAngleTwo(bodyMarkPoint[7], bodyMarkPoint[11], bodyMarkPoint[23], 'x', 'y'));
-            tv6.setText("2");
-            tv2.setText(getLandmarksAngleTwo(bodyMarkPoint[7], bodyMarkPoint[13], bodyMarkPoint[23], 'x', 'y') + " = 엉덩이팔꿈치귀 / 어깨귀귀너머 = " + getLandmarksAngleTwo(bodyTempPoint[7], bodyMarkPoint[7], bodyMarkPoint[11], 'x', 'y'));
-            tv6.setText("3");
-            tv3.setText(getLandmarksAngleTwo(bodyMarkPoint[23], bodyMarkPoint[25], bodyMarkPoint[27], 'x', 'y') + " = 엉덩이무릎발목 / 무릎뒷꿈치발 = " + getLandmarksAngleTwo(bodyTempPoint[25], bodyMarkPoint[29], bodyMarkPoint[31], 'x', 'y'));
-            tv6.setText("4");
-            tv4.setText(markResult[11][23][25] + " = " + markResult[7][11][23] + " = " + markResult[7][13][23] + " = "
-                        + markResult[7][7][11] + " = " + markResult[23][25][27] + " = " + markResult[25][29][31] + " = ");
-            tv6.setText("5");
-            tv5.setText(sideTotalResult[1] + " = 왼쪽 / 오른쪽 = " + sideTotalResult[0]);
-            tv6.setText("6");
+                            //정상판별
+                            if( sideTotalResult[1] && sideTotalResult[0]) {
+                                tv6.setText("1");
+                                tv2.setText("현 자세가 정상입니다.");
+                            }
+                            else if( sideTotalResult[1]) {
+                                tv6.setText("2");
+                                tv2.setText("오른쪽 자세만 정상입니다.");
+                            }
+                            else if( sideTotalResult[0]) {
+                                tv6.setText("3");
+                                tv2.setText("왼쪽 자세만 정상입니다.");
+                            }
+                            else {
+                                tv6.setText("4");
+                                tv2.setText("현 자세가 비정상입니다.");
+                            }
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
