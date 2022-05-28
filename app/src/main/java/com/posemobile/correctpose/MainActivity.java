@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
 
     private float ratioPoint_1a, ratioPoint_1b, ratioPoint_2a, ratioPoint_2b;
     //비율 계산에 쓰일 포인트 변수 (왼쪽, 오른쪽)
-    private boolean waist, neck, ankle,knee;
+    private boolean waist, neck, ankle, knee;
 
     Handler ui_Handler = null;
     private boolean startThreadCheck = true;
@@ -190,12 +190,12 @@ public class MainActivity extends AppCompatActivity {
                                 tv6.setText("k");
                             }
 
-                            if(bodyMarkPoint[11].z > bodyMarkPoint[12].z)
+                            if (bodyMarkPoint[11].z > bodyMarkPoint[12].z)
                                 getLandmarksAngleResult(0);
                                 //왼쪽
                             else
                                 getLandmarksAngleResult(1);
-                                //오른쪽
+                            //오른쪽
 
                             if (startThreadCheck) {
                                 ui_Handler.post(callThread);
@@ -215,23 +215,20 @@ public class MainActivity extends AppCompatActivity {
         //타이머 제외 갱신 UI 관리는 여기서
         @Override
         public void run() {
-                            //정상판별
-                            if( sideTotalResult[1] && sideTotalResult[0]) {
-                                tv6.setText("1");
-                                tv2.setText("현 자세가 정상입니다.");
-                            }
-                            else if( sideTotalResult[1]) {
-                                tv6.setText("2");
-                                tv2.setText("오른쪽 자세만 정상입니다.");
-                            }
-                            else if( sideTotalResult[0]) {
-                                tv6.setText("3");
-                                tv2.setText("왼쪽 자세만 정상입니다.");
-                            }
-                            else {
-                                tv6.setText("4");
-                                tv2.setText("현 자세가 비정상입니다.");
-                            }
+            //정상판별
+            if (sideTotalResult[1] && sideTotalResult[0]) {
+                tv6.setText("1");
+                tv2.setText("현 자세가 정상입니다.");
+            } else if (sideTotalResult[1]) {
+                tv6.setText("2");
+                tv2.setText("오른쪽 자세만 정상입니다.");
+            } else if (sideTotalResult[0]) {
+                tv6.setText("3");
+                tv2.setText("왼쪽 자세만 정상입니다.");
+            } else {
+                tv6.setText("4");
+                tv2.setText("현 자세가 비정상입니다.");
+            }
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
@@ -243,11 +240,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void angleCalculationResult(int firstPoint, int secondPoint, int thirdPoint, float oneAngle, float twoAngle) {
-        if(getLandmarksAngleTwo(bodyMarkPoint[firstPoint], bodyMarkPoint[secondPoint], bodyMarkPoint[thirdPoint], 'x', 'y') >= oneAngle
+        if (getLandmarksAngleTwo(bodyMarkPoint[firstPoint], bodyMarkPoint[secondPoint], bodyMarkPoint[thirdPoint], 'x', 'y') >= oneAngle
                 && getLandmarksAngleTwo(bodyMarkPoint[firstPoint], bodyMarkPoint[secondPoint], bodyMarkPoint[thirdPoint], 'x', 'y') <= twoAngle) {
             markResult[firstPoint][secondPoint][thirdPoint] = true;
-        }
-        else {
+        } else {
             markResult[firstPoint][secondPoint][thirdPoint] = false;
         }
     }
@@ -264,16 +260,14 @@ public class MainActivity extends AppCompatActivity {
 
         bodyTempPoint[7 + side] = bodyMarkPoint[7 + side];
         bodyTempPoint[7 + side].x = bodyTempPoint[7 + side].x + 300f;
-        if(!Double.isNaN(getLandmarksAngleTwo(bodyTempPoint[7 + side], bodyMarkPoint[7 + side], bodyMarkPoint[11 + side], 'x', 'y'))) {
-            if(getLandmarksAngleTwo(bodyTempPoint[7 + side], bodyMarkPoint[7 + side], bodyMarkPoint[11 + side], 'x', 'y') >= 80f
+        if (!Double.isNaN(getLandmarksAngleTwo(bodyTempPoint[7 + side], bodyMarkPoint[7 + side], bodyMarkPoint[11 + side], 'x', 'y'))) {
+            if (getLandmarksAngleTwo(bodyTempPoint[7 + side], bodyMarkPoint[7 + side], bodyMarkPoint[11 + side], 'x', 'y') >= 80f
                     && getLandmarksAngleTwo(bodyTempPoint[7 + side], bodyMarkPoint[7 + side], bodyMarkPoint[11 + side], 'x', 'y') <= 160f) {
                 markResult[7 + side][7 + side][11 + side] = true;
-            }
-            else {
+            } else {
                 markResult[7 + side][7 + side][11 + side] = false;
             }
-        }
-        else {
+        } else {
             markResult[7 + side][7 + side][11 + side] = true;
         }
         //어깨-귀-귀너머(x+300)
@@ -284,8 +278,8 @@ public class MainActivity extends AppCompatActivity {
         angleCalculationResult(25 + side, 29 + side, 31 + side, 80f, 140f); //100f, 120f
         //무릎-뒷꿈치-발 발목각도
 
-        if(markResult[11 + side][23 + side][25 + side] && markResult[7 + side][11 + side][23 + side] && markResult[7 + side][13 + side][23 + side]
-        && markResult[7 + side][7 + side][11 + side] && markResult[23 + side][25 + side][27 + side] && markResult[25 + side][29 + side][31 + side])
+        if (markResult[11 + side][23 + side][25 + side] && markResult[7 + side][11 + side][23 + side] && markResult[7 + side][13 + side][23 + side]
+                && markResult[7 + side][7 + side][11 + side] && markResult[23 + side][25 + side][27 + side] && markResult[25 + side][29 + side][31 + side])
             sideTotalResult[side] = true;
         else
             sideTotalResult[side] = false;
