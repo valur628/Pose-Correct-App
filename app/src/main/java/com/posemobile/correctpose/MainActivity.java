@@ -77,9 +77,6 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView tv;
     private TextView tv2;
-    private TextView tv3;
-    private TextView tv4;
-    private TextView tv5;
     private TextView tv6;
 
     class markPoint {
@@ -101,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
 
     private float ratioPoint_1a, ratioPoint_1b, ratioPoint_2a, ratioPoint_2b;
     //비율 계산에 쓰일 포인트 변수 (왼쪽, 오른쪽)
+    private boolean waist, neck, ankle,knee;
 
 
     @Override
@@ -109,9 +107,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(getContentViewLayoutResId());
         tv = findViewById(R.id.tv);
         tv2 = findViewById(R.id.tv2);
-        tv3 = findViewById(R.id.tv3);
-        tv4 = findViewById(R.id.tv4);
-        tv5 = findViewById(R.id.tv5);
         tv6 = findViewById(R.id.tv6);
         //tv.setText("000");
         try {
@@ -194,20 +189,24 @@ public class MainActivity extends AppCompatActivity {
                             if(getLandmarksAngleTwo(bodyMarkPoint[11], bodyMarkPoint[23], bodyMarkPoint[25], 'x', 'y') >= 90f
                                     && getLandmarksAngleTwo(bodyMarkPoint[11], bodyMarkPoint[23], bodyMarkPoint[25], 'x', 'y') <= 130f) {
                                 markResult[11][23][25] = true;
+                                waist = true;
                             }
                             else {
                                 markResult[11][23][25] = false;
+                                waist = false;
                             }
-                            //무릎-엉덩이-허리
+                            //무릎-엉덩이-허리 허리각도
 
                             if(getLandmarksAngleTwo(bodyMarkPoint[7], bodyMarkPoint[11], bodyMarkPoint[23], 'x', 'y') >= 130f
                                     && getLandmarksAngleTwo(bodyMarkPoint[7], bodyMarkPoint[11], bodyMarkPoint[23], 'x', 'y') <= 180f) {
                                 markResult[7][11][23] = true;
+                                neck = true;
                             }
                             else {
                                 markResult[7][11][23] = false;
+                                neck = false;
                             }
-                            //엉덩이-허리-귀
+                            //엉덩이-허리-귀 목각도
 
                             if(getLandmarksAngleTwo(bodyMarkPoint[7], bodyMarkPoint[13], bodyMarkPoint[23], 'x', 'y') >= 140f
                                     && getLandmarksAngleTwo(bodyMarkPoint[7], bodyMarkPoint[13], bodyMarkPoint[23], 'x', 'y') <= 180f) {
@@ -232,32 +231,87 @@ public class MainActivity extends AppCompatActivity {
                             if(getLandmarksAngleTwo(bodyMarkPoint[23], bodyMarkPoint[25], bodyMarkPoint[27], 'x', 'y') >= 90f
                                     && getLandmarksAngleTwo(bodyMarkPoint[23], bodyMarkPoint[25], bodyMarkPoint[27], 'x', 'y') <= 120f) {
                                 markResult[23][25][27] = true;
+                                knee = true;
                             }
                             else {
                                 markResult[23][25][27] = false;
+                                knee = false;
                             }
                             //엉덩이-무릎-발목 무릎각도
 
                             if(getLandmarksAngleTwo(bodyMarkPoint[25], bodyMarkPoint[29], bodyMarkPoint[31], 'x', 'y') >= 100f
                                     && getLandmarksAngleTwo(bodyMarkPoint[25], bodyMarkPoint[29], bodyMarkPoint[31], 'x', 'y') <= 120f) {
                                 markResult[25][29][31] = true;
+                                ankle = true;
                             }
                             else {
                                 markResult[25][29][31] = false;
+                                ankle = false;
                             }
                             //무릎-뒷꿈치-발 발목각도
 
-                            tv6.setText("1");
-                            tv.setText(getLandmarksAngleTwo(bodyMarkPoint[11], bodyMarkPoint[23], bodyMarkPoint[25], 'x', 'y') + " = 112325 / 071123 = " + getLandmarksAngleTwo(bodyMarkPoint[7], bodyMarkPoint[11], bodyMarkPoint[23], 'x', 'y'));
-                            tv6.setText("2");
-                            tv2.setText(getLandmarksAngleTwo(bodyMarkPoint[7], bodyMarkPoint[13], bodyMarkPoint[23], 'x', 'y') + " = 071323 / 070711 = " + getLandmarksAngleTwo(bodyTempPoint[7], bodyMarkPoint[7], bodyMarkPoint[11], 'x', 'y'));
-                            tv6.setText("3");
-                            tv3.setText(markResult[11][23][25] + " = [11][23][25] / [7][11][23] = " + markResult[7][11][23]);
-                            tv6.setText("4");
-                            tv4.setText(markResult[7][13][23] + " = [7][13][23] / [7][7][11] = " + markResult[7][7][11]);
-                            tv6.setText("5");
-                            tv5.setText(bodyTempPoint[7].x + " = 7tempX / 11normalX = " + bodyMarkPoint[11].x);
-                            tv6.setText("6");
+                            //한군데 문제가 있을 경우
+                            if(!neck&&waist&&knee&&ankle){
+                                tv.setText("목 자세가 잘못됐습니다.");
+                            }
+                            else if(neck&&!waist&&knee&&ankle){
+                                tv.setText("허리 자세가 잘못됐습니다.");
+                            }
+                            else if(neck&&waist&&!knee&&ankle){
+                                tv.setText("무릎 자세가 잘못됐습니다.");
+                            }
+                            else if(neck&&waist&&knee&&!ankle){
+                                tv.setText("발목 자세가 잘못됐습니다.");
+                            }
+
+                            //두군데 문제가 있을 경우
+                            if(!neck&&!waist&&knee&&ankle){
+                                tv.setText("목, 허리 자세가 잘못됐습니다.");
+                            }
+                            else if(!neck&&waist&&!knee&&ankle){
+                                tv.setText("목, 무릎 자세가 잘못됐습니다.");
+                            }
+                            else if(!neck&&!ankle&&knee&&waist){
+                                tv.setText("목, 발목 자세가 잘못됐습니다.");
+                            }
+                            else if(neck&&!waist&&!knee&&ankle){
+                                tv.setText("허리, 무릎 자세가 잘못됐습니다.");
+                            }
+                            else if(!ankle&&!waist&&knee&&neck){
+                                tv.setText("발목, 허리 자세가 잘못됐습니다.");
+                            }
+                            else if(!knee&&!ankle&&neck&&waist){
+                                tv.setText("발목, 무릎 자세가 잘못됐습니다.");
+                            }
+
+                            //세군데 문제가 있을 경우
+                            if(!knee&&!ankle&&!neck&&waist){
+                                tv.setText("목, 무릎, 발목 자세가 잘못됐습니다.");
+                            }
+                            else if(!knee&&!ankle&neck&&!waist){
+                                tv.setText("허리, 무릎, 발목 자세가 잘못됐습니다.");
+                            }
+                            else if(!knee&&ankle&!neck&&!waist){
+                                tv.setText("목,허리, 무릎 자세가 잘못됐습니다.");
+                            }
+                            else if(knee&&!ankle&!neck&&!waist){
+                                tv.setText("목, 허리, 발목 자세가 잘못됐습니다.");
+                            }
+                            //전부 문제가 있을 경우
+                            if(!knee&&!ankle&!neck&&!waist){
+                                tv.setText("전체적인 자세가 잘못됐습니다.");
+                            }
+
+                            //정상판별
+                            if( waist && knee && neck && ankle) {
+                                tv6.setText("1");
+                                tv2.setText("현 자세가 정상입니다.");
+                            }
+                            else {
+                                tv6.setText("2");
+                                tv2.setText("현 자세가 비정상입니다.");
+                            }
+
                         } catch (InvalidProtocolBufferException e) {
                             Log.e(TAG, "Couldn't Exception received - " + e);
                             return;
