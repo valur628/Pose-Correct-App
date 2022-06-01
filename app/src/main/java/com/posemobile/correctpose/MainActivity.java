@@ -96,7 +96,11 @@ public class MainActivity extends AppCompatActivity {
     //비율 계산값 변수(정규화 값)
     private boolean[][][] markResult = new boolean[33][33][33];
     //검사 결과 true/false 변수
-    private boolean sideTotalResult[] = new boolean[2]; //0=왼쪽, 1=오른쪽
+    private boolean sideTotalResult[] = new boolean[2];
+    //0=왼쪽, 1=오른쪽
+    private float[][] resultAngleSave = new float[2][6];
+    //부위 사라짐 감지용 0.5초 딜레이 저장 변수
+
 
     private float ratioPoint_1a, ratioPoint_1b, ratioPoint_2a, ratioPoint_2b;
     //비율 계산에 쓰일 포인트 변수 (왼쪽, 오른쪽)
@@ -189,6 +193,8 @@ public class MainActivity extends AppCompatActivity {
                                 bodyRatioMeasurement[i] = bodyMarkPoint[i].z / (ratioPoint_1b - ratioPoint_1a);
                                 tv6.setText("k");
                             }
+                            tv.setText("X:"+bodyMarkPoint[25].x + " / Y:" + bodyMarkPoint[25].y + " / Z:" + bodyMarkPoint[25].z + "\n/ANGLE:" +getLandmarksAngleTwo(bodyMarkPoint[23], bodyMarkPoint[25], bodyMarkPoint[27], 'x', 'y'));
+                            //각도 말고 xy 좌표 기반은 가능할지도
 
                             if (bodyMarkPoint[11].z > bodyMarkPoint[12].z)
                                 getLandmarksAngleResult(0);
@@ -238,6 +244,29 @@ public class MainActivity extends AppCompatActivity {
             ui_Handler.post(this);
         }
     }
+/*
+    public void angleCalculationNumber(int firstPoint, int secondPoint, int thirdPoint, int oneNumber, int twoNumber) {
+        resultAngleSave[oneNumber][twoNumber] =
+                getLandmarksAngleTwo(bodyMarkPoint[firstPoint], bodyMarkPoint[secondPoint], bodyMarkPoint[thirdPoint], 'x', 'y');
+    }
+
+    public void getAngleCalculationNumber(int side) { //0=왼쪽, 1=오른쪽
+        angleCalculationNumber(11 + side, 23 + side, 25 + side, side, 0);
+        angleCalculationNumber(7 + side, 11 + side, 23 + side, side, 1);
+        angleCalculationNumber(7 + side, 13 + side, 23 + side, side, 2);
+
+        resultAngleSave[side][3] =
+                getLandmarksAngleTwo(bodyMarkPoint[firstPoint], bodyMarkPoint[secondPoint], bodyMarkPoint[thirdPoint], 'x', 'y');
+
+        bodyTempPoint[7 + side] = bodyMarkPoint[7 + side];
+        bodyTempPoint[7 + side].x = bodyTempPoint[7 + side].x + 300f;
+        if (!Double.isNaN(getLandmarksAngleTwo(bodyTempPoint[7 + side], bodyMarkPoint[7 + side], bodyMarkPoint[11 + side], 'x', 'y'))) {
+                markResult[7 + side][7 + side][11 + side] = true;
+        }
+        angleCalculationNumber(23 + side, 25 + side, 27 + side, side, 4);
+        angleCalculationNumber(25 + side, 29 + side, 31 + side, side, 5);
+    }
+    */
 
     public void angleCalculationResult(int firstPoint, int secondPoint, int thirdPoint, float oneAngle, float twoAngle) {
         if (getLandmarksAngleTwo(bodyMarkPoint[firstPoint], bodyMarkPoint[secondPoint], bodyMarkPoint[thirdPoint], 'x', 'y') >= oneAngle
