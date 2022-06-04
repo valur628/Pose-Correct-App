@@ -213,15 +213,7 @@ public class MainActivity extends AppCompatActivity {
                                 else
                                     OutOfRangeSave[i] = false;
                             }
-                            tv.setText("X:" + bodyMarkPoint[25].x + " / Y:" + bodyMarkPoint[25].y + " / Z:" + bodyMarkPoint[25].z + "\n/ANGLE:" + getLandmarksAngleTwo(bodyMarkPoint[23], bodyMarkPoint[25], bodyMarkPoint[27], 'x', 'y'));
-                            //각도 말고 xy 좌표 기반은 가능할지도
-
-                            if (bodyMarkPoint[11].z > bodyMarkPoint[12].z)
-                                getLandmarksAngleResult(0);
-                                //왼쪽
-                            else
-                                getLandmarksAngleResult(1);
-                            //오른쪽
+                            //tv.setText("X:" + bodyMarkPoint[25].x + " / Y:" + bodyMarkPoint[25].y + " / Z:" + bodyMarkPoint[25].z + "\n/ANGLE:" + getLandmarksAngleTwo(bodyMarkPoint[23], bodyMarkPoint[25], bodyMarkPoint[27], 'x', 'y'));
 
                             if (startThreadCheck) {
                                 ui_Handler.post(callThread);
@@ -256,42 +248,12 @@ public class MainActivity extends AppCompatActivity {
                 tv2.setText("현 자세가 비정상입니다.");
             }
 
-            if(!markResult[11][23][25]){
-                iv3.setImageResource(R.drawable.waist_red);
-            }
-            else{
-                iv3.setImageResource(R.drawable.waist_green);
-            }
-            if(!markResult[7][11][23]){
-                iv1.setImageResource(R.drawable.neck_red);
-            }
-            else{
-                iv1.setImageResource(R.drawable.neck_green);
-            }
-            if(!markResult[7][13][23]){
-                iv2.setImageResource(R.drawable.arm_red);
-            }
-            else{
-                iv2.setImageResource(R.drawable.arm_green);
-            }
-            if(!markResult[7][7][11]){
-                iv6.setImageResource(R.drawable.twist_red);
-            }
-            else{
-                iv6.setImageResource(R.drawable.twist_green);
-            }
-            if(!markResult[23][25][27]){
-                iv4.setImageResource(R.drawable.leg_red);
-            }
-            else{
-                iv4.setImageResource(R.drawable.leg_green);
-            }
-            if(!markResult[25][29][31]){
-                iv5.setImageResource(R.drawable.ankle_red);
-            }
-            else{
-                iv5.setImageResource(R.drawable.ankle_green);
-            }
+            if (bodyMarkPoint[11].z > bodyMarkPoint[12].z)
+                getLandmarksAngleResult(0);
+                //왼쪽
+            else
+                getLandmarksAngleResult(1);
+                //오른쪽
 
             try {
                 Thread.sleep(500);
@@ -347,6 +309,7 @@ public class MainActivity extends AppCompatActivity {
                 iv3.setImageResource(R.drawable.waist_red);
             }
         } else {
+            //여기에 비감지(회색)
             markResult[11 + side][23 + side][25 + side] = true;
         }
 
@@ -359,6 +322,7 @@ public class MainActivity extends AppCompatActivity {
                 iv1.setImageResource(R.drawable.neck_red);
             }
         } else {
+            //여기에 비감지(회색)
             markResult[7 + side][11 + side][23 + side] = true;
         }
 
@@ -371,6 +335,7 @@ public class MainActivity extends AppCompatActivity {
                 iv2.setImageResource(R.drawable.arm_red);
             }
         } else {
+            //여기에 비감지(회색)
             markResult[7 + side][13 + side][23 + side] = true;
         }
 
@@ -394,6 +359,7 @@ public class MainActivity extends AppCompatActivity {
                 iv6.setImageResource(R.drawable.twist_red);
             }
         } else {
+            //여기에 비감지(회색)
             markResult[7 + side][7 + side][11 + side] = true;
         }
 
@@ -406,6 +372,7 @@ public class MainActivity extends AppCompatActivity {
                 iv4.setImageResource(R.drawable.leg_red);
             }
         } else {
+            //여기에 비감지(회색)
             markResult[23 + side][25 + side][27 + side] = true;
         }
 
@@ -418,6 +385,7 @@ public class MainActivity extends AppCompatActivity {
                 iv5.setImageResource(R.drawable.ankle_red);
             }
         } else {
+            //여기에 비감지(회색)
             markResult[25 + side][29 + side][31 + side] = true;
         }
 
@@ -427,6 +395,7 @@ public class MainActivity extends AppCompatActivity {
         else
             sideTotalResult[side] = false;
     }
+
 
     // Used to obtain the content view for this application. If you are extending this class, and
     // have a custom layout, override this method and return the custom layout.
