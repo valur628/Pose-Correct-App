@@ -17,6 +17,7 @@ import android.util.Size;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.mediapipe.formats.proto.LandmarkProto.NormalizedLandmark;
@@ -76,9 +77,16 @@ public class MainActivity extends AppCompatActivity {
     // Handles camera access via the {@link CameraX} Jetpack support library.
     private CameraXPreviewHelper cameraHelper;
 
-    private TextView tv;
+
     private TextView tv2;
     private TextView tv6;
+
+    private ImageView iv1;
+    private ImageView iv2;
+    private ImageView iv3;
+    private ImageView iv4;
+    private ImageView iv5;
+    private ImageView iv6;
 
     class markPoint {
         float x;
@@ -106,7 +114,6 @@ public class MainActivity extends AppCompatActivity {
 
     private float ratioPoint_1a, ratioPoint_1b, ratioPoint_2a, ratioPoint_2b;
     //비율 계산에 쓰일 포인트 변수 (왼쪽, 오른쪽)
-    private boolean waist, neck, ankle, knee;
 
     Handler ui_Handler = null;
     private boolean startThreadCheck = true;
@@ -115,9 +122,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getContentViewLayoutResId());
-        tv = findViewById(R.id.tv);
         tv2 = findViewById(R.id.tv2);
         tv6 = findViewById(R.id.tv6);
+
+        iv1= findViewById(R.id.imageView3);
+        iv2= findViewById(R.id.imageView4);
+        iv3= findViewById(R.id.imageView5);
+        iv4= findViewById(R.id.imageView6);
+        iv5= findViewById(R.id.imageView9);
+        iv6= findViewById(R.id.imageView8);
+
         //tv.setText("000");
         try {
             applicationInfo =
@@ -241,6 +255,44 @@ public class MainActivity extends AppCompatActivity {
                 tv6.setText("4");
                 tv2.setText("현 자세가 비정상입니다.");
             }
+
+            if(!markResult[11][23][25]){
+                iv3.setImageResource(R.drawable.waist_red);
+            }
+            else{
+                iv3.setImageResource(R.drawable.waist_green);
+            }
+            if(!markResult[7][11][23]){
+                iv1.setImageResource(R.drawable.neck_red);
+            }
+            else{
+                iv1.setImageResource(R.drawable.neck_green);
+            }
+            if(!markResult[7][13][23]){
+                iv2.setImageResource(R.drawable.arm_red);
+            }
+            else{
+                iv2.setImageResource(R.drawable.arm_green);
+            }
+            if(!markResult[7][7][11]){
+                iv6.setImageResource(R.drawable.twist_red);
+            }
+            else{
+                iv6.setImageResource(R.drawable.twist_green);
+            }
+            if(!markResult[23][25][27]){
+                iv4.setImageResource(R.drawable.leg_red);
+            }
+            else{
+                iv4.setImageResource(R.drawable.leg_green);
+            }
+            if(!markResult[25][29][31]){
+                iv5.setImageResource(R.drawable.ankle_red);
+            }
+            else{
+                iv5.setImageResource(R.drawable.ankle_green);
+            }
+
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
@@ -290,7 +342,9 @@ public class MainActivity extends AppCompatActivity {
             angleCalculationResult(11 + side, 23 + side, 25 + side, 70f, 140f); //90f 120f
             //무릎-엉덩이-허리
             if (markResult[11 + side][23 + side][25 + side] == true) { //각도 판별
+                iv3.setImageResource(R.drawable.waist_green);
             } else {
+                iv3.setImageResource(R.drawable.waist_red);
             }
         } else {
             markResult[11 + side][23 + side][25 + side] = true;
@@ -300,7 +354,9 @@ public class MainActivity extends AppCompatActivity {
             angleCalculationResult(7 + side, 11 + side, 23 + side, 120f, 180f); //130f 180f
             //엉덩이-허리-귀
             if (markResult[7 + side][11 + side][23 + side] == true) { //각도 판별
+                iv1.setImageResource(R.drawable.neck_green);
             } else {
+                iv1.setImageResource(R.drawable.neck_red);
             }
         } else {
             markResult[7 + side][11 + side][23 + side] = true;
@@ -310,7 +366,9 @@ public class MainActivity extends AppCompatActivity {
             angleCalculationResult(7 + side, 13 + side, 23 + side, 120f, 180f); //140f 180f
             //엉덩이-팔꿈치-귀
             if (markResult[7 + side][13 + side][23 + side] == true) { //각도 판별
+                iv2.setImageResource(R.drawable.arm_green);
             } else {
+                iv2.setImageResource(R.drawable.arm_red);
             }
         } else {
             markResult[7 + side][13 + side][23 + side] = true;
@@ -330,8 +388,10 @@ public class MainActivity extends AppCompatActivity {
                 markResult[7 + side][7 + side][11 + side] = true;
             }
             //어깨-귀-귀너머(x+300)
-            if (markResult[7 + side][7 + side][11 + side] == true) { //범위 판별
+            if (markResult[7 + side][7 + side][11 + side] == true) { //각도 판별
+                iv6.setImageResource(R.drawable.twist_green);
             } else {
+                iv6.setImageResource(R.drawable.twist_red);
             }
         } else {
             markResult[7 + side][7 + side][11 + side] = true;
@@ -341,7 +401,9 @@ public class MainActivity extends AppCompatActivity {
             angleCalculationResult(23 + side, 25 + side, 27 + side, 70f, 140f); //90f, 120f
             //엉덩이-무릎-발목 무릎각도
             if (markResult[23 + side][25 + side][27 + side] == true) { //각도 판별
+                iv4.setImageResource(R.drawable.leg_green);
             } else {
+                iv4.setImageResource(R.drawable.leg_red);
             }
         } else {
             markResult[23 + side][25 + side][27 + side] = true;
@@ -351,7 +413,9 @@ public class MainActivity extends AppCompatActivity {
             angleCalculationResult(25 + side, 29 + side, 31 + side, 80f, 140f); //100f, 120f
             //무릎-뒷꿈치-발 발목각도
             if (markResult[25 + side][29 + side][31 + side] == true) { //각도 판별
+                iv5.setImageResource(R.drawable.ankle_green);
             } else {
+                iv5.setImageResource(R.drawable.ankle_red);
             }
         } else {
             markResult[25 + side][29 + side][31 + side] = true;
