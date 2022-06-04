@@ -104,7 +104,13 @@ public class MainActivity extends AppCompatActivity {
     //비율 계산값 변수(정규화 값)
     private boolean[][][] markResult = new boolean[33][33][33];
     //검사 결과 true/false 변수
-    private boolean sideTotalResult[] = new boolean[2]; //0=왼쪽, 1=오른쪽
+    private boolean[] sideTotalResult = new boolean[2];
+    //0=왼쪽, 1=오른쪽
+    private boolean[] OutOfRangeSave = new boolean[33];
+    //범위 벗어남 감지 저장 변수
+    private float[][] resultAngleSave = new float[2][6];
+    //부위 사라짐 감지용 0.5초 딜레이 저장 변수
+
 
     private float ratioPoint_1a, ratioPoint_1b, ratioPoint_2a, ratioPoint_2b;
     //비율 계산에 쓰일 포인트 변수 (왼쪽, 오른쪽)
@@ -202,7 +208,13 @@ public class MainActivity extends AppCompatActivity {
                                 tv6.setText("i");
                                 bodyRatioMeasurement[i] = bodyMarkPoint[i].z / (ratioPoint_1b - ratioPoint_1a);
                                 tv6.setText("k");
+                                if ((-100f <= bodyMarkPoint[i].x && bodyMarkPoint[i].x <= 1100f) && (-100f <= bodyMarkPoint[i].y && bodyMarkPoint[i].y <= 1100f))
+                                    OutOfRangeSave[i] = true;
+                                else
+                                    OutOfRangeSave[i] = false;
                             }
+                            tv.setText("X:" + bodyMarkPoint[25].x + " / Y:" + bodyMarkPoint[25].y + " / Z:" + bodyMarkPoint[25].z + "\n/ANGLE:" + getLandmarksAngleTwo(bodyMarkPoint[23], bodyMarkPoint[25], bodyMarkPoint[27], 'x', 'y'));
+                            //각도 말고 xy 좌표 기반은 가능할지도
 
                             if (bodyMarkPoint[11].z > bodyMarkPoint[12].z)
                                 getLandmarksAngleResult(0);
@@ -290,6 +302,29 @@ public class MainActivity extends AppCompatActivity {
             ui_Handler.post(this);
         }
     }
+/*
+    public void angleCalculationNumber(int firstPoint, int secondPoint, int thirdPoint, int oneNumber, int twoNumber) {
+        resultAngleSave[oneNumber][twoNumber] =
+                getLandmarksAngleTwo(bodyMarkPoint[firstPoint], bodyMarkPoint[secondPoint], bodyMarkPoint[thirdPoint], 'x', 'y');
+    }
+
+    public void getAngleCalculationNumber(int side) { //0=왼쪽, 1=오른쪽
+        angleCalculationNumber(11 + side, 23 + side, 25 + side, side, 0);
+        angleCalculationNumber(7 + side, 11 + side, 23 + side, side, 1);
+        angleCalculationNumber(7 + side, 13 + side, 23 + side, side, 2);
+
+        resultAngleSave[side][3] =
+                getLandmarksAngleTwo(bodyMarkPoint[firstPoint], bodyMarkPoint[secondPoint], bodyMarkPoint[thirdPoint], 'x', 'y');
+
+        bodyTempPoint[7 + side] = bodyMarkPoint[7 + side];
+        bodyTempPoint[7 + side].x = bodyTempPoint[7 + side].x + 300f;
+        if (!Double.isNaN(getLandmarksAngleTwo(bodyTempPoint[7 + side], bodyMarkPoint[7 + side], bodyMarkPoint[11 + side], 'x', 'y'))) {
+                markResult[7 + side][7 + side][11 + side] = true;
+        }
+        angleCalculationNumber(23 + side, 25 + side, 27 + side, side, 4);
+        angleCalculationNumber(25 + side, 29 + side, 31 + side, side, 5);
+    }
+    */
 
     public void angleCalculationResult(int firstPoint, int secondPoint, int thirdPoint, float oneAngle, float twoAngle) {
         if (getLandmarksAngleTwo(bodyMarkPoint[firstPoint], bodyMarkPoint[secondPoint], bodyMarkPoint[thirdPoint], 'x', 'y') >= oneAngle
@@ -301,34 +336,90 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void getLandmarksAngleResult(int side) { //0=왼쪽, 1=오른쪽
-        angleCalculationResult(11 + side, 23 + side, 25 + side, 70f, 140f); //90f 120f
-        //무릎-엉덩이-허리
-
-        angleCalculationResult(7 + side, 11 + side, 23 + side, 120f, 180f);//130f 180f
-        //엉덩이-허리-귀
-
-        angleCalculationResult(7 + side, 13 + side, 23 + side, 120f, 180f); //140f 180f
-        //엉덩이-팔꿈치-귀
-
-        bodyTempPoint[7 + side] = bodyMarkPoint[7 + side];
-        bodyTempPoint[7 + side].x = bodyTempPoint[7 + side].x + 300f;
-        if (!Double.isNaN(getLandmarksAngleTwo(bodyTempPoint[7 + side], bodyMarkPoint[7 + side], bodyMarkPoint[11 + side], 'x', 'y'))) {
-            if (getLandmarksAngleTwo(bodyTempPoint[7 + side], bodyMarkPoint[7 + side], bodyMarkPoint[11 + side], 'x', 'y') >= 80f
-                    && getLandmarksAngleTwo(bodyTempPoint[7 + side], bodyMarkPoint[7 + side], bodyMarkPoint[11 + side], 'x', 'y') <= 160f) {
-                markResult[7 + side][7 + side][11 + side] = true;
+        //첫번째 true if는 범위 내에 있을 때, 첫번째 false if는 범위 밖에 있을 때
+        //두번째 true if는 검사 결과가 정상일 때, 두번째 false if는 검사 결과가 비정상일 때
+        if (OutOfRangeSave[11 + side] == true && OutOfRangeSave[23 + side] == true && OutOfRangeSave[25 + side] == true) { //범위 판별
+            angleCalculationResult(11 + side, 23 + side, 25 + side, 70f, 140f); //90f 120f
+            //무릎-엉덩이-허리
+            if (markResult[11 + side][23 + side][25 + side] == true) { //각도 판별
+                iv3.setImageResource(R.drawable.waist_green);
             } else {
-                markResult[7 + side][7 + side][11 + side] = false;
+                iv3.setImageResource(R.drawable.waist_red);
+            }
+        } else {
+            markResult[11 + side][23 + side][25 + side] = true;
+        }
+
+        if (OutOfRangeSave[7 + side] == true && OutOfRangeSave[11 + side] == true && OutOfRangeSave[23 + side] == true) { //범위 판별
+            angleCalculationResult(7 + side, 11 + side, 23 + side, 120f, 180f); //130f 180f
+            //엉덩이-허리-귀
+            if (markResult[7 + side][11 + side][23 + side] == true) { //각도 판별
+                iv1.setImageResource(R.drawable.neck_green);
+            } else {
+                iv1.setImageResource(R.drawable.neck_red);
+            }
+        } else {
+            markResult[7 + side][11 + side][23 + side] = true;
+        }
+
+        if (OutOfRangeSave[7 + side] == true && OutOfRangeSave[13 + side] == true && OutOfRangeSave[23 + side] == true) { //범위 판별
+            angleCalculationResult(7 + side, 13 + side, 23 + side, 120f, 180f); //140f 180f
+            //엉덩이-팔꿈치-귀
+            if (markResult[7 + side][13 + side][23 + side] == true) { //각도 판별
+                iv2.setImageResource(R.drawable.arm_green);
+            } else {
+                iv2.setImageResource(R.drawable.arm_red);
+            }
+        } else {
+            markResult[7 + side][13 + side][23 + side] = true;
+        }
+
+        if (OutOfRangeSave[7 + side] == true && OutOfRangeSave[23 + side] == true) { //범위 판별
+            bodyTempPoint[7 + side] = bodyMarkPoint[7 + side];
+            bodyTempPoint[7 + side].x = bodyTempPoint[7 + side].x + 300f;
+            if (!Double.isNaN(getLandmarksAngleTwo(bodyTempPoint[7 + side], bodyMarkPoint[7 + side], bodyMarkPoint[11 + side], 'x', 'y'))) {
+                if (getLandmarksAngleTwo(bodyTempPoint[7 + side], bodyMarkPoint[7 + side], bodyMarkPoint[11 + side], 'x', 'y') >= 80f
+                        && getLandmarksAngleTwo(bodyTempPoint[7 + side], bodyMarkPoint[7 + side], bodyMarkPoint[11 + side], 'x', 'y') <= 160f) {
+                    markResult[7 + side][7 + side][11 + side] = true;
+                } else {
+                    markResult[7 + side][7 + side][11 + side] = false;
+                }
+            } else {
+                markResult[7 + side][7 + side][11 + side] = true;
+            }
+            //어깨-귀-귀너머(x+300)
+            if (markResult[7 + side][7 + side][11 + side] == true) { //각도 판별
+                iv6.setImageResource(R.drawable.twist_green);
+            } else {
+                iv6.setImageResource(R.drawable.twist_red);
             }
         } else {
             markResult[7 + side][7 + side][11 + side] = true;
         }
-        //어깨-귀-귀너머(x+300)
 
-        angleCalculationResult(23 + side, 25 + side, 27 + side, 70f, 140f); //90f, 120f
-        //엉덩이-무릎-발목 무릎각도
+        if (OutOfRangeSave[23 + side] == true && OutOfRangeSave[25 + side] == true && OutOfRangeSave[27 + side] == true) { //범위 판별
+            angleCalculationResult(23 + side, 25 + side, 27 + side, 70f, 140f); //90f, 120f
+            //엉덩이-무릎-발목 무릎각도
+            if (markResult[23 + side][25 + side][27 + side] == true) { //각도 판별
+                iv4.setImageResource(R.drawable.leg_green);
+            } else {
+                iv4.setImageResource(R.drawable.leg_red);
+            }
+        } else {
+            markResult[23 + side][25 + side][27 + side] = true;
+        }
 
-        angleCalculationResult(25 + side, 29 + side, 31 + side, 80f, 140f); //100f, 120f
-        //무릎-뒷꿈치-발 발목각도
+        if (OutOfRangeSave[25 + side] == true && OutOfRangeSave[29 + side] == true && OutOfRangeSave[31 + side] == true) { //범위 판별
+            angleCalculationResult(25 + side, 29 + side, 31 + side, 80f, 140f); //100f, 120f
+            //무릎-뒷꿈치-발 발목각도
+            if (markResult[25 + side][29 + side][31 + side] == true) { //각도 판별
+                iv5.setImageResource(R.drawable.ankle_green);
+            } else {
+                iv5.setImageResource(R.drawable.ankle_red);
+            }
+        } else {
+            markResult[25 + side][29 + side][31 + side] = true;
+        }
 
         if (markResult[11 + side][23 + side][25 + side] && markResult[7 + side][11 + side][23 + side] && markResult[7 + side][13 + side][23 + side]
                 && markResult[7 + side][7 + side][11 + side] && markResult[23 + side][25 + side][27 + side] && markResult[25 + side][29 + side][31 + side])
