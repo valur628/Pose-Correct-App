@@ -1,5 +1,6 @@
 package com.posemobile.correctpose;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,6 +20,7 @@ import android.view.SurfaceView;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.mediapipe.formats.proto.LandmarkProto.NormalizedLandmark;
 import com.google.mediapipe.formats.proto.LandmarkProto.NormalizedLandmarkList;
@@ -96,10 +98,8 @@ public class MainActivity extends AppCompatActivity {
 
     private NormalizedLandmark[] bodyAdvancePoint = new NormalizedLandmark[33];
     //임시 랜드마크 포인트 변수
-    private markPoint[] bodyMarkPoint = new markPoint[33];
+    private markPoint[] bodyMarkPoint = new markPoint[35];
     //몸 랜드마크 포인트 변수
-    private markPoint[] bodyTempPoint = new markPoint[33];
-    //몸 랜드마크 추가 계산용 변수
     private float[] bodyRatioMeasurement = new float[33];
     //비율 계산값 변수(정규화 값)
     private boolean[][][] markResult = new boolean[33][33][33];
@@ -117,6 +117,10 @@ public class MainActivity extends AppCompatActivity {
 
     Handler ui_Handler = null;
     private boolean startThreadCheck = true;
+    private boolean ui_HandlerCheck = false;
+
+    private final long finishtimeed = 2500;
+    private long presstime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -192,7 +196,6 @@ public class MainActivity extends AppCompatActivity {
                             tv6.setText("b");
                             for (int i = 0; i <= 32; i++) {
                                 bodyMarkPoint[i] = new markPoint();
-                                bodyTempPoint[i] = new markPoint();
                                 tv6.setText("c");
                                 bodyAdvancePoint[i] = poseLandmarks.getLandmark(i);
                                 tv6.setText("d");
@@ -230,22 +233,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     class ThreadClass extends Thread {
-        //타이머 제외 갱신 UI 관리는 여기서
+        //갱신 UI 관리는 여기서
         @Override
         public void run() {
             //정상판별
             if (sideTotalResult[1] && sideTotalResult[0]) {
                 tv6.setText("1");
-                tv2.setText("현 자세가 정상입니다.");
+                tv2.setText("현 자세 정상입니다.");
             } else if (sideTotalResult[1]) {
                 tv6.setText("2");
-                tv2.setText("오른쪽 자세만 정상입니다.");
+                tv2.setText("오른쪽 자세 정상입니다.");
             } else if (sideTotalResult[0]) {
                 tv6.setText("3");
-                tv2.setText("왼쪽 자세만 정상입니다.");
+                tv2.setText("왼쪽 자세 정상입니다.");
             } else {
                 tv6.setText("4");
-                tv2.setText("현 자세가 비정상입니다.");
+                tv2.setText("현 자세 비정상입니다.");
             }
 
             if (bodyMarkPoint[11].z > bodyMarkPoint[12].z)
@@ -261,7 +264,9 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
                 startThreadCheck = true;
             }
-            ui_Handler.post(this);
+            if(ui_HandlerCheck == false) {
+                ui_Handler.post(this);
+            }
         }
     }
 /*
@@ -301,7 +306,7 @@ public class MainActivity extends AppCompatActivity {
         //첫번째 true if는 범위 내에 있을 때, 첫번째 false if는 범위 밖에 있을 때
         //두번째 true if는 검사 결과가 정상일 때, 두번째 false if는 검사 결과가 비정상일 때
         if (OutOfRangeSave[11 + side] == true && OutOfRangeSave[23 + side] == true && OutOfRangeSave[25 + side] == true) { //범위 판별
-            angleCalculationResult(11 + side, 23 + side, 25 + side, 70f, 140f); //90f 120f
+            angleCalculationResult(11 + side, 23 + side, 25 + side, 80f, 130f); //90f 120f | 70f 140f
             //무릎-엉덩이-허리
             if (markResult[11 + side][23 + side][25 + side] == true) { //각도 판별
                 iv1.setImageResource(R.drawable.waist_green);
@@ -315,7 +320,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (OutOfRangeSave[7 + side] == true && OutOfRangeSave[11 + side] == true && OutOfRangeSave[23 + side] == true) { //범위 판별
-            angleCalculationResult(7 + side, 11 + side, 23 + side, 120f, 180f); //130f 180f
+            angleCalculationResult(7 + side, 11 + side, 23 + side, 140f, 180f); //130f 180f | 120f 180f
             //엉덩이-허리-귀
             if (markResult[7 + side][11 + side][23 + side] == true) { //각도 판별
                 iv2.setImageResource(R.drawable.neck_green);
@@ -328,10 +333,10 @@ public class MainActivity extends AppCompatActivity {
             markResult[7 + side][11 + side][23 + side] = true;
         }
 
-        if (OutOfRangeSave[7 + side] == true && OutOfRangeSave[13 + side] == true && OutOfRangeSave[23 + side] == true) { //범위 판별
-            angleCalculationResult(7 + side, 13 + side, 23 + side, 120f, 180f); //140f 180f
+        if (OutOfRangeSave[11 + side] == true && OutOfRangeSave[13 + side] == true && OutOfRangeSave[15 + side] == true) { //범위 판별
+            angleCalculationResult(11 + side, 13 + side, 15 + side, 80f, 130f); //140f 180f | 120f 180f X //90f 120f
             //엉덩이-팔꿈치-귀
-            if (markResult[7 + side][13 + side][23 + side] == true) { //각도 판별
+            if (markResult[11 + side][13 + side][15 + side] == true) { //각도 판별
                 iv3.setImageResource(R.drawable.elbow_green);
             } else {
                 iv3.setImageResource(R.drawable.elbow_red);
@@ -339,28 +344,32 @@ public class MainActivity extends AppCompatActivity {
         } else {
             //여기에 비감지(회색)
             iv3.setImageResource(R.drawable.elbow_gray);
-            markResult[7 + side][13 + side][23 + side] = true;
+            markResult[11 + side][13 + side][15 + side] = true;
         }
 
-        if (OutOfRangeSave[7 + side] == true && OutOfRangeSave[23 + side] == true) { //범위 판별
-            bodyTempPoint[7 + side] = bodyMarkPoint[7 + side];
-            bodyTempPoint[7 + side].x = bodyTempPoint[7 + side].x + 300f;
-            if (!Double.isNaN(getLandmarksAngleTwo(bodyTempPoint[7 + side], bodyMarkPoint[7 + side], bodyMarkPoint[11 + side], 'x', 'y'))) {
-                if (getLandmarksAngleTwo(bodyTempPoint[7 + side], bodyMarkPoint[7 + side], bodyMarkPoint[11 + side], 'x', 'y') >= 80f
-                        && getLandmarksAngleTwo(bodyTempPoint[7 + side], bodyMarkPoint[7 + side], bodyMarkPoint[11 + side], 'x', 'y') <= 160f) {
+        bodyMarkPoint[33 + side] = new markPoint();
+        if(side == 0)
+            bodyMarkPoint[33 + side].x = bodyAdvancePoint[7].getX() * 1000f + 300;
+        else
+            bodyMarkPoint[33 + side].x = bodyAdvancePoint[7].getX() * 1000f - 300;
+        bodyMarkPoint[33 + side].y = bodyAdvancePoint[7].getY() * 1000f - 10;
+        bodyMarkPoint[33 + side].z = bodyAdvancePoint[7].getZ() * 1000f + 10;
+        if (OutOfRangeSave[7 + side] == true && OutOfRangeSave[11 + side] == true) { //범위 판별
+            if (!Double.isNaN(getLandmarksAngleTwo(bodyMarkPoint[33 + side], bodyMarkPoint[7 + side], bodyMarkPoint[11 + side], 'x', 'y'))) {
+                if (getLandmarksAngleTwo(bodyMarkPoint[33 + side], bodyMarkPoint[7 + side], bodyMarkPoint[11 + side], 'x', 'y') >= 90f
+                        && getLandmarksAngleTwo(bodyMarkPoint[33 + side], bodyMarkPoint[7 + side], bodyMarkPoint[11 + side], 'x', 'y') <= 130f)
+                { //90f 140f | 80f 160f
                     markResult[7 + side][7 + side][11 + side] = true;
                 } else {
                     markResult[7 + side][7 + side][11 + side] = false;
                 }
-            } else {
-                markResult[7 + side][7 + side][11 + side] = true;
+                if (markResult[7 + side][7 + side][11 + side] == true) { //각도 판별
+                    iv4.setImageResource(R.drawable.ear_green);
+                } else {
+                    iv4.setImageResource(R.drawable.ear_red);
+                }
             }
             //어깨-귀-귀너머(x+300)
-            if (markResult[7 + side][7 + side][11 + side] == true) { //각도 판별
-                iv4.setImageResource(R.drawable.ear_green);
-            } else {
-                iv4.setImageResource(R.drawable.ear_red);
-            }
         } else {
             //여기에 비감지(회색)
             iv4.setImageResource(R.drawable.ear_gray);
@@ -368,7 +377,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (OutOfRangeSave[23 + side] == true && OutOfRangeSave[25 + side] == true && OutOfRangeSave[27 + side] == true) { //범위 판별
-            angleCalculationResult(23 + side, 25 + side, 27 + side, 70f, 140f); //90f, 120f
+            angleCalculationResult(23 + side, 25 + side, 27 + side, 80f, 130f); //90f 120f | 70f 140f
             //엉덩이-무릎-발목 무릎각도
             if (markResult[23 + side][25 + side][27 + side] == true) { //각도 판별
                 iv5.setImageResource(R.drawable.knee_green);
@@ -382,7 +391,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (OutOfRangeSave[25 + side] == true && OutOfRangeSave[29 + side] == true && OutOfRangeSave[31 + side] == true) { //범위 판별
-            angleCalculationResult(25 + side, 29 + side, 31 + side, 80f, 140f); //100f, 120f
+            angleCalculationResult(25 + side, 29 + side, 31 + side, 90f, 130f); //100f 120f | 80f 140f
             //무릎-뒷꿈치-발 발목각도
             if (markResult[25 + side][29 + side][31 + side] == true) { //각도 판별
                 iv6.setImageResource(R.drawable.ankle_green);
@@ -395,7 +404,7 @@ public class MainActivity extends AppCompatActivity {
             markResult[25 + side][29 + side][31 + side] = true;
         }
 
-        if (markResult[11 + side][23 + side][25 + side] && markResult[7 + side][11 + side][23 + side] && markResult[7 + side][13 + side][23 + side]
+        if (markResult[11 + side][23 + side][25 + side] && markResult[7 + side][11 + side][23 + side] && markResult[11 + side][13 + side][15 + side]
                 && markResult[7 + side][7 + side][11 + side] && markResult[23 + side][25 + side][27 + side] && markResult[25 + side][29 + side][31 + side])
             sideTotalResult[side] = true;
         else
@@ -549,4 +558,22 @@ public class MainActivity extends AppCompatActivity {
         return degree;
     }
 
+    @Override
+    public void onBackPressed() {
+        long tempTime = System.currentTimeMillis();
+        long intervalTime = tempTime - presstime;
+
+        if (0 <= intervalTime && finishtimeed >= intervalTime)
+        {
+            ui_HandlerCheck = true;
+            Intent intent = new Intent(getApplicationContext(), descriptionActivity.class);
+            startActivity(intent);	//intent 에 명시된 액티비티로 이동
+            finish();
+        }
+        else
+        {
+            presstime = tempTime;
+            Toast.makeText(getApplicationContext(), "한 번 더 누르면 뒤로 갑니다", Toast.LENGTH_SHORT).show();
+        }
+    }
 }
