@@ -15,49 +15,56 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+
             android:orientation="horizontal">
 
             <ImageView
                 android:id="@+id/imageView3"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_width="10dp"
+                android:layout_height="100dp"
                 android:layout_weight="1"
-                app:srcCompat="@drawable/neck_green" />
+                app:srcCompat="@drawable/waist_gray" />
 
             <ImageView
                 android:id="@+id/imageView4"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_width="10dp"
+                android:layout_height="100dp"
                 android:layout_weight="1"
-                app:srcCompat="@drawable/arm_green" />
+                app:srcCompat="@drawable/neck_gray" />
 
             <ImageView
                 android:id="@+id/imageView5"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_width="10dp"
+                android:layout_height="100dp"
                 android:layout_weight="1"
-                app:srcCompat="@drawable/waist_green" />
+                app:srcCompat="@drawable/elbow_gray" />
+        </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
             <ImageView
                 android:id="@+id/imageView6"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_width="10dp"
+                android:layout_height="100dp"
                 android:layout_weight="1"
-                app:srcCompat="@drawable/leg_green" />
+                app:srcCompat="@drawable/ear_gray" />
+
+            <ImageView
+                android:id="@+id/imageView7"
+                android:layout_width="10dp"
+                android:layout_height="100dp"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/knee_gray" />
 
             <ImageView
                 android:id="@+id/imageView8"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_width="10dp"
+                android:layout_height="100dp"
                 android:layout_weight="1"
-                app:srcCompat="@drawable/twist_green" />
-
-            <ImageView
-                android:id="@+id/imageView9"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                app:srcCompat="@drawable/ankle_green" />
+                app:srcCompat="@drawable/ankle_gray" />
         </LinearLayout>
 
         <TextView
