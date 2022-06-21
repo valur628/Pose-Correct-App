@@ -1,12 +1,11 @@
-
-
-# # Pose-Correct-App
+# Pose-Correct-App
 ### _자세 교정 프로그램_
 >경상국립대학교 컴퓨터과학과
 >팀장 박주철(19학번), 팀원 김정민(17학번)
 
 # 개요
-자세 교정 프로그램(Pose Correct)는 사람의 자세를 옆면에서 감지한 다음, 신체 각 지점의 각도와 길이에 따라 올바른 자세 여부를 판별한다. 그리고 판별 결과에 따라 각 부위 단위로 자세 상황을 알려주는 안드로이드 기반의 도우미 애플리케이션이다.
+자세 교정 프로그램(Pose Correct)는 사람의 자세를 옆면에서 감지한 다음, 신체 각 지점의 각도와 길이에 따라 올바른 자세 여부를 판별한다. 그리고 판별 결과에 따라 부위마다 자세 상황을 알려주는 안드로이드 기반의 도우미 애플리케이션이다.
+
 ***
 # 상세
 ### 개발 인원
@@ -22,7 +21,7 @@
 
 ### 개발 기술
 본 프로젝트 개발에 사용된 라이브러리 및 파이프라인입니다.
-- [Flogger] - Java용 Fluent interface 로깅 API입니다.
+- [Flogger] - Java용 Fluent interface 로깅 API
 - [Android Jetpack] - 고품질 개발 라이브러리 및 툴 모음집
 - [Mediapipe] - 라이브 머신러닝 파이프라인
 
@@ -53,7 +52,7 @@
 | [1차 보고서 PDF 링크](https://drive.google.com/file/d/1qA5ArMzdRrgRU8YWum507_YhT55ssndE/view?usp=sharing) | [1차 발표 PPT 링크](https://docs.google.com/presentation/d/1MkpIK95KpTUsb0bEsdpteb6aeZcvfOE2/edit?usp=sharing&ouid=106667079864051075882&rtpof=true&sd=true) |
 | [2차 보고서 PDF 링크](https://drive.google.com/file/d/15lNZAOidlDvyWHB-62x10fNYhBu7XZN_/view?usp=sharing) | 발표 없음 |
 | [3차 보고서 PDF 링크](https://drive.google.com/file/d/1EtlbNVMa2nJLJjvqZi64jHhZX5ZMRa_3/view?usp=sharing) | [2차 발표 PPT 링크](https://docs.google.com/presentation/d/1tTL2lqRdPgfzS42PzaqOIpeQzdoVB1IQ/edit?usp=sharing&ouid=106667079864051075882&rtpof=true&sd=true) |
-| [4차 보고서 PDF 링크](https://drive.google.com/file/d/1bnOeUdG_CZ4BzFehB6OtGcO1cwp-I1lv/view?usp=sharing) | [최종 발표 PPT 링크](https://docs.google.com/presentation/d/1jZEnRu1DV4QA9h08FVvsk4NmVvzFLcxh/edit?usp=sharing&ouid=106667079864051075882&rtpof=true&sd=true) |
+| [최종 보고서 PDF 링크](https://drive.google.com/file/d/1bnOeUdG_CZ4BzFehB6OtGcO1cwp-I1lv/view?usp=sharing) | [최종 발표 PPT 링크](https://docs.google.com/presentation/d/1jZEnRu1DV4QA9h08FVvsk4NmVvzFLcxh/edit?usp=sharing&ouid=106667079864051075882&rtpof=true&sd=true) |
 
 ***
 # 향후 계획
