@@ -29,7 +29,7 @@
 | 종류 | 목록 |
 | ------ | ------ |
 | 사용 언어 | Java(1.8), Python(3.7), C++ |
-| 개발 도구 | Android Studio(2021.1.1.) - SDK(31.0) & NDK(20.1.5948944), Github |
+| 개발 도구 | Android Studio(2021.1.1.) - SDK(30.0) & NDK(20.1.5948944), Github |
 | OS 환경 | Windows 10, Ubuntu 22.04 LTS |
 
 ### 사용 방법
